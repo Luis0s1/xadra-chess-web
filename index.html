@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XADRA — Xadrez Editorial & Apple Liquid Glass</title>
+
+  <!-- Tipografia Editorial: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              blue: '#2563EB',
+              blueLight: '#3B82F6',
+              amber: '#F59E0B',
+              crimson: '#E11D48',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* =========================================================================
+       DESIGN SYSTEM MASTER: APPLE LIQUID GLASS & EDITORIAL PRO (TOKENS 60-30-10)
+       ========================================================================= */
+    :root {
+      --bg-base: #F8FAFC;
+      --glass-surface: rgba(255, 255, 255, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.55);
+      --glass-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.08);
+      --text-primary: #0F172A;
+      --text-secondary: #64748B;
+      --divider: rgba(148, 163, 184, 0.18);
+    }
+
+    html.dark {
+      --bg-base: #09090B;
+      --glass-surface: rgba(24, 24, 27, 0.62);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 16px 40px -6px rgba(0, 0, 0, 0.65);
+      --text-primary: #FAFAFA;
+      --text-secondary: #A1A1AA;
+      --divider: rgba(255, 255, 255, 0.09);
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1), color 0.35s ease;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Fundo Atmosférico com Blur Difuso */
+    .ambient-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 9999px;
+      filter: blur(95px);
+      opacity: 0.52;
+      transition: all 0.8s ease;
+    }
+
+    html.dark .orb {
+      opacity: 0.26;
+    }
+
+    /* Superfícies Apple Liquid Glass */
+    .liquid-glass {
+      background: var(--glass-surface);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow), inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, background 0.35s ease;
+    }
+
+    html.dark .liquid-glass {
+      box-shadow: var(--glass-shadow), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .liquid-card-hover:hover {
+      transform: translateY(-2px) scale(1.006);
+    }
+
+    /* Botão Primário 4 Camadas de Sombra */
+    .btn-premium {
+      background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+      color: #FFFFFF;
+      box-shadow:
+        inset 0 1px 1px rgba(255, 255, 255, 0.45),
+        0 4px 10px rgba(37, 99, 235, 0.25),
+        0 10px 24px -4px rgba(37, 99, 235, 0.35),
+        0 0 16px rgba(59, 130, 246, 0.3);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, filter 0.25s ease;
+    }
+
+    .btn-premium:hover {
+      filter: brightness(1.06);
+      transform: translateY(-1px) scale(1.012);
+    }
+
+    .btn-premium:active {
+      transform: scale(0.95);
+    }
+
+    /* Física de Mola em Botões Secundários */
+    .tactile-btn {
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .tactile-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* Tipografia Editorial */
+    .hero-title {
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1.04;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+    }
+
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Toggle Elástico Estilo iOS */
+    .ios-switch {
+      width: 50px;
+      height: 28px;
+      border-radius: 9999px;
+      background: rgba(148, 163, 184, 0.28);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+      position: relative;
+      cursor: pointer;
+      transition: background-color 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      flex-shrink: 0;
+    }
+
+    .ios-switch.active {
+      background: #2563EB;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), 0 0 10px rgba(37, 99, 235, 0.35);
+    }
+
+    .ios-switch-knob {
+      width: 22px;
+      height: 22px;
+      border-radius: 9999px;
+      background: #FFFFFF;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22);
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .ios-switch.active .ios-switch-knob {
+      transform: translateX(22px);
+    }
+
+    /* Animação de Entrada */
+    @keyframes slideFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .screen-enter {
+      animation: slideFadeUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* =========================================================================
+       TEMAS DO TABULEIRO 8x8 (ARDÓSIA CLÁSSICO, MADEIRA, ESMERALDA, LIQUID GLASS)
+       ========================================================================= */
+    .board-frame {
+      border-radius: 18px;
+      padding: 8px;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.25), 0 14px 30px -6px rgba(15, 23, 42, 0.22);
+      transition: background 0.35s ease;
+    }
+
+    /* 1. Ardósia / Clássico Cinza (Idêntico ao rascunho 1001286289.png) */
+    .theme-slate .board-frame { background: #525252; }
+    .theme-slate .sq-light { background-color: #FFFFFF; }
+    .theme-slate .sq-dark { background-color: #7D7D7D; }
+    .swatch-slate-light { background: #FFFFFF; }
+    .swatch-slate-dark { background: #7D7D7D; }
+
+    /* 2. Madeira Clássica */
+    .theme-wood .board-frame { background: #5C3A21; }
+    .theme-wood .sq-light { background-color: #EAD1A8; }
+    .theme-wood .sq-dark { background-color: #9C6334; }
+    .swatch-wood-light { background: #EAD1A8; }
+    .swatch-wood-dark { background: #9C6334; }
+
+    /* 3. Verde Esmeralda */
+    .theme-emerald .board-frame { background: #3D5A2A; }
+    .theme-emerald .sq-light { background-color: #EEEED2; }
+    .theme-emerald .sq-dark { background-color: #769656; }
+    .swatch-emerald-light { background: #EEEED2; }
+    .swatch-emerald-dark { background: #769656; }
+
+    /* 4. Apple Liquid Glass */
+    .theme-glass .board-frame { background: rgba(30, 41, 59, 0.45); backdrop-filter: blur(16px); }
+    .theme-glass .sq-light { background-color: rgba(248, 250, 252, 0.85); }
+    .theme-glass .sq-dark { background-color: rgba(59, 130, 246, 0.36); }
+    .swatch-glass-light { background: rgba(248, 250, 252, 0.9); }
+    .swatch-glass-dark { background: rgba(59, 130, 246, 0.48); }
+
+    /* Estados das Casas do Tabuleiro */
+    .chess-sq {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .chess-sq.sq-selected::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(37, 99, 235, 0.42);
+      pointer-events: none;
+    }
+
+    .chess-sq.sq-last-move::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(245, 158, 11, 0.34);
+      pointer-events: none;
+    }
+
+    .chess-sq.sq-check {
+      background: radial-gradient(circle, rgba(225, 29, 72, 0.85) 0%, rgba(225, 29, 72, 0.35) 70%, transparent 100%) !important;
+    }
+
+    .legal-dot {
+      width: 28%;
+      height: 28%;
+      border-radius: 9999px;
+      background: rgba(15, 23, 42, 0.28);
+      z-index: 15;
+      pointer-events: none;
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .legal-capture-ring {
+      position: absolute;
+      inset: 8%;
+      border-radius: 9999px;
+      border: 3.5px solid rgba(225, 29, 72, 0.72);
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    .piece-wrapper {
+      width: 84%;
+      height: 84%;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .piece-wrapper svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+    }
+
+    .chess-sq:hover .piece-wrapper {
+      transform: translateY(-2px) scale(1.05);
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-blue-500 selection:text-white">
+
+  <!-- Fundo Atmosférico Difuso -->
+  <div class="ambient-canvas">
+    <div id="ambient-orb-1" class="orb w-[460px] h-[460px] bg-blue-400/35 -top-24 -left-24"></div>
+    <div id="ambient-orb-2" class="orb w-[520px] h-[520px] bg-teal-300/30 top-1/3 -right-32"></div>
+    <div id="ambient-orb-3" class="orb w-[420px] h-[420px] bg-amber-300/25 -bottom-24 left-1/4"></div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- NAVBAR FLUTUANTE (DYNAMIC PILL — CONFORME RASCUNHOS DO USUÁRIO)        -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-4 z-40 px-3 sm:px-4 flex justify-center">
+    <nav class="liquid-glass rounded-full px-2.5 py-2 flex items-center gap-1 sm:gap-2 max-w-full overflow-x-auto" aria-label="Navegação Principal">
+      <!-- Logo Torre de Xadrez Customizada em SVG (Rascunho 1001286281.png) -->
+      <button onclick="navigateTo('menu')" class="tactile-btn flex items-center gap-2 pl-2 pr-2.5 py-1.5 rounded-full hover:bg-black/5 dark:hover:bg-white/10" title="XADRA — Tela Inicial">
+        <span class="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white shadow-sm">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 4h2v2h3V4h4v2h3V4h2v5l-2 2v7l2 2v2H5v-2l2-2v-7L5 9V4z"/>
+            <line x1="7" y1="11" x2="17" y2="11"/>
+          </svg>
+        </span>
+        <span class="font-extrabold tracking-tight text-sm hidden md:inline">XADRA</span>
+      </button>
+
+      <div class="h-5 w-[1px] bg-slate-400/25 mx-0.5"></div>
+
+      <!-- Abas com Pílula Deslizante (Gliding Pill) -->
+      <div class="flex items-center gap-1" id="nav-tabs">
+        <!-- 1. Início -->
+        <button data-tab="menu" onclick="navigateTo('menu')" class="nav-pill tactile-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold transition-all bg-blue-600 text-white shadow-sm flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          <span>Início</span>
+        </button>
+
+        <!-- 2. Partida (Contextual / Direto para o Tabuleiro) -->
+        <button data-tab="match" onclick="navigateTo('match')" class="nav-pill tactile-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="6 4 20 12 6 20 6 4"/>
+          </svg>
+          <span>Partida</span>
+        </button>
+
+        <!-- 3. Temas & Ajustes -->
+        <button data-tab="settings" onclick="navigateTo('settings')" class="nav-pill tactile-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          <span class="hidden sm:inline">Temas & Ajustes</span>
+          <span class="sm:hidden">Ajustes</span>
+        </button>
+
+        <!-- 4. Resultados -->
+        <button data-tab="outcomes" onclick="navigateTo('outcomes')" class="nav-pill tactile-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all text-slate-600 dark:text-slate-300 hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          <span>Resultados</span>
+        </button>
+      </div>
+
+      <div class="h-5 w-[1px] bg-slate-400/25 mx-0.5"></div>
+
+      <!-- Alternar Modo Claro (#F8FAFC) / Escuro OLED (#09090B) -->
+      <button onclick="toggleTheme()" title="Alternar Tema Claro/Escuro" class="tactile-btn p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200" aria-label="Alternar Tema">
+        <svg id="theme-icon-sun" class="w-4 h-4 hidden dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+        </svg>
+        <svg id="theme-icon-moon" class="w-4 h-4 block dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Container Principal -->
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 pt-6 pb-28">
+
+    <!-- ===================================================================== -->
+    <!-- TELA 1: INÍCIO — CONFIGURAÇÃO DE MODALIDADE & TURNO (1001286281.png)  -->
+    <!-- ===================================================================== -->
+    <section id="screen-menu" class="screen-view screen-enter">
+      
+      <!-- Cabeçalho Editorial Assimétrico -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-end mb-7">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full liquid-glass mb-3">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span class="eyebrow text-slate-600 dark:text-slate-300">Ambiente Seguro • LGPD & Motor IA Ativo</span>
+          </div>
+          <h1 class="hero-title text-4xl sm:text-5xl tracking-tight">XADRA</h1>
+          <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed">
+            Configure os parâmetros da sua partida. Enfrente nossa inteligência artificial adaptativa em 8 níveis ou dispute uma partida local 1x1.
+          </p>
+        </div>
+
+        <!-- Cartão de Pontuação Acumulada Global -->
+        <div class="lg:col-span-5 flex lg:justify-end">
+          <div class="liquid-glass rounded-3xl px-5 py-3.5 flex items-center gap-4">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+              </svg>
+            </div>
+            <div>
+              <span class="eyebrow text-slate-500 dark:text-slate-400 block">Ranking Pessoal</span>
+              <span class="font-mono text-lg font-extrabold tabular-nums" id="menu-global-points">PONTOS • 75</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bento Grid de Configuração -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+
+        <!-- PASSO 01 • MODALIDADE & NÍVEL DE INTELIGÊNCIA DA CPU -->
+        <div class="md:col-span-7 liquid-glass liquid-card-hover rounded-[24px] p-6 flex flex-col justify-between">
+          <div>
+            <span class="eyebrow text-blue-600 dark:text-blue-400">Passo 01 • Modalidade</span>
+            <h2 class="text-2xl font-extrabold mt-1 tracking-tight">Modo de Jogo</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Selecione como deseja disputar esta sessão.</p>
+
+            <div class="space-y-3 mt-5">
+              <!-- Player x CPU -->
+              <button onclick="selectMode('cpu')" id="mode-btn-cpu" class="tactile-btn w-full text-left p-4 rounded-2xl border-2 border-blue-600 bg-blue-600/10 dark:bg-blue-500/15 relative transition-all flex items-center justify-between">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-sm shrink-0">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                      <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="font-bold text-base">Player x CPU</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Treine contra o motor adaptativo</div>
+                  </div>
+                </div>
+                <span id="badge-cpu" class="w-3.5 h-3.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 shrink-0"></span>
+              </button>
+
+              <!-- 1x1 (Local) -->
+              <button onclick="selectMode('1x1')" id="mode-btn-1x1" class="tactile-btn w-full text-left p-4 rounded-2xl border border-slate-400/25 hover:border-slate-400/50 bg-white/40 dark:bg-white/5 relative transition-all flex items-center justify-between">
+                <div class="flex items-center gap-3.5">
+                  <div class="w-11 h-11 rounded-xl bg-slate-200/80 dark:bg-zinc-800 text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="font-bold text-base">1x1 (Local)</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Dois jogadores no mesmo dispositivo</div>
+                  </div>
+                </div>
+                <span id="badge-1x1" class="w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-zinc-700 shrink-0"></span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Seletor de Dificuldade da CPU (Nível 1 a 8) -->
+          <div id="cpu-difficulty-panel" class="mt-6 pt-5 border-t border-slate-400/20 transition-opacity duration-300">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nível de Inteligência da CPU</span>
+              <span id="cpu-level-label" class="font-mono text-xs font-bold px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">INTERMEDIÁRIO</span>
+            </div>
+
+            <div class="flex items-center justify-between gap-3 bg-white/50 dark:bg-black/25 p-3 rounded-2xl border border-slate-400/15">
+              <button onclick="changeCpuLevel(-1)" class="tactile-btn w-11 h-11 rounded-xl liquid-glass flex items-center justify-center hover:bg-blue-600 hover:text-white" aria-label="Diminuir nível">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+
+              <div class="flex items-center gap-3.5">
+                <div class="relative w-13 h-13 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                  <svg class="w-13 h-13" viewBox="0 0 64 64" fill="none">
+                    <path d="M22 54V46C16 44 12 38 12 30C12 18.9543 20.9543 10 32 10C43.0457 10 51 18.5 51 29L54 35L49 37V44C49 47.3137 46.3137 50 43 50H36V54" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M21 27C21 20.5 26 16 32.5 16C39 16 43 20.5 43 26.5C43 31 39.5 34 34.5 34H29L25 38V33.5C22.5 32.2 21 29.8 21 27Z" fill="currentColor" fill-opacity="0.18" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  <span id="cpu-level-number" class="font-mono font-extrabold text-sm absolute top-[15px] left-[23px] tabular-nums">6</span>
+                </div>
+                <div>
+                  <div class="text-sm font-extrabold">Nível <span id="cpu-level-text" class="font-mono tabular-nums">6</span> / 8</div>
+                  <div class="text-xs text-slate-500 dark:text-slate-400" id="cpu-response-time">Tempo de resposta: ~0.8s</div>
+                </div>
+              </div>
+
+              <button onclick="changeCpuLevel(1)" class="tactile-btn w-11 h-11 rounded-xl liquid-glass flex items-center justify-center hover:bg-blue-600 hover:text-white" aria-label="Aumentar nível">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PASSO 02 • PREFERÊNCIA DE TURNO & INICIAR SESSÃO -->
+        <div class="md:col-span-5 liquid-glass liquid-card-hover rounded-[24px] p-6 flex flex-col justify-between">
+          <div>
+            <span class="eyebrow text-amber-600 dark:text-amber-400">Passo 02 • Preferência de Turno</span>
+            <h2 class="text-2xl font-extrabold mt-1 tracking-tight">Escolha seu Lado</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">As peças claras iniciam o primeiro turno.</p>
+
+            <!-- 3 Opções: Aleatório, Claras, Escuras -->
+            <div class="grid grid-cols-3 gap-3 mt-5">
+              <button onclick="selectSide('random')" id="side-btn-random" class="side-btn tactile-btn p-3.5 rounded-2xl border border-slate-400/25 bg-white/40 dark:bg-white/5 flex flex-col items-center gap-2.5">
+                <svg class="w-9 h-9" viewBox="0 0 36 36" fill="none">
+                  <circle cx="18" cy="18" r="12" stroke="currentColor" stroke-width="2.2"/>
+                  <path d="M18 6A12 12 0 0 1 18 30V6Z" fill="currentColor" fill-opacity="0.8"/>
+                  <path d="M18 6A12 12 0 0 0 18 30V6Z" fill="#FFFFFF" fill-opacity="0.9"/>
+                </svg>
+                <span class="text-xs font-bold">Aleatório</span>
+              </button>
+
+              <button onclick="selectSide('white')" id="side-btn-white" class="side-btn tactile-btn p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-600/10 dark:bg-blue-500/15 flex flex-col items-center gap-2.5">
+                <svg class="w-9 h-9" viewBox="0 0 36 36" fill="none">
+                  <circle cx="18" cy="18" r="12" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2"/>
+                  <circle cx="18" cy="18" r="5" stroke="#0F172A" stroke-width="1.6" stroke-opacity="0.35"/>
+                </svg>
+                <span class="text-xs font-bold">Claras</span>
+              </button>
+
+              <button onclick="selectSide('black')" id="side-btn-black" class="side-btn tactile-btn p-3.5 rounded-2xl border border-slate-400/25 bg-white/40 dark:bg-white/5 flex flex-col items-center gap-2.5">
+                <svg class="w-9 h-9" viewBox="0 0 36 36" fill="none">
+                  <circle cx="18" cy="18" r="12" fill="#1E293B" stroke="currentColor" stroke-width="2.2"/>
+                  <circle cx="18" cy="18" r="5" stroke="#FFFFFF" stroke-width="1.6" stroke-opacity="0.4"/>
+                </svg>
+                <span class="text-xs font-bold">Escuras</span>
+              </button>
+            </div>
+
+            <!-- Último Rascunho Salvo -->
+            <div class="mt-5 p-3.5 rounded-2xl bg-white/45 dark:bg-white/5 border border-slate-400/15 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span class="text-xs font-medium text-slate-600 dark:text-slate-300">Último rascunho salvo</span>
+              </div>
+              <span class="font-mono text-[11px] text-slate-500 tabular-nums" id="saved-draft-date">25/11/2026</span>
+            </div>
+          </div>
+
+          <!-- CTA Primário: Iniciar Sessão -->
+          <div class="mt-6">
+            <button onclick="startNewSession()" class="btn-premium w-full py-4 px-6 rounded-2xl font-bold text-base flex items-center justify-center gap-2.5 cursor-pointer">
+              <span>Iniciar Sessão</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="6 4 20 12 6 20 6 4"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TELA 2: ARENA DE XADREZ JOGÁVEL + MASCOTE ROBÔ IA (1001286289.png)    -->
+    <!-- ===================================================================== -->
+    <section id="screen-match" class="screen-view hidden screen-enter">
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Coluna Principal (8 cols): Top HUD + Mascote Robô + Tabuleiro 8x8 + Bottom HUD -->
+        <div class="lg:col-span-8 space-y-3.5">
+
+          <!-- Top Opponent HUD Card (Idêntico ao topo de 1001286289.png) -->
+          <div class="liquid-glass rounded-2xl p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <button onclick="navigateTo('menu')" title="Sair para o Início" class="tactile-btn w-9 h-9 rounded-xl bg-black/5 dark:bg-white/10 hover:bg-rose-500/20 hover:text-rose-500 flex items-center justify-center transition-colors" aria-label="Sair">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+              <div class="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-xs flex items-center justify-center shadow-sm">
+                <span id="opponent-avatar-text">IA</span>
+              </div>
+              <div>
+                <div class="text-sm font-extrabold leading-tight" id="opponent-name-display">CPU • Nível 6</div>
+                <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5" id="opponent-status-display">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  <span>Oponente conectado</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pontos & Cronômetro do Oponente (0 PONTOS | 15:00) -->
+            <div class="flex items-center gap-2.5 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-slate-400/15">
+              <div class="flex items-center gap-1.5 pr-2.5 border-r border-slate-400/20">
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+                </span>
+                <span class="font-mono text-xs font-bold tabular-nums" id="opponent-score-display">0 PONTOS</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                </span>
+                <span class="font-mono text-xs font-bold tabular-nums" id="opponent-timer-display">15:00</span>
+              </div>
+            </div>
+
+            <!-- Botão Engrenagem (Ajustes) -->
+            <button onclick="navigateTo('settings')" title="Temas & Ajustes" class="tactile-btn w-9 h-9 rounded-xl bg-white/60 dark:bg-white/10 hover:bg-blue-600 hover:text-white flex items-center justify-center border border-slate-400/20" aria-label="Temas e Ajustes">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Mascote Robô IA + Balão de Fala Reativo (Desenhado à mão no rascunho 1001286289.png) -->
+          <div id="coach-mascot-row" class="flex items-center gap-3 px-1 transition-all duration-300">
+            <button type="button" onclick="cycleRobotQuote()" title="Tocar no Robô Coach" class="tactile-btn w-14 h-14 shrink-0 rounded-2xl liquid-glass flex items-center justify-center relative shadow-sm group" aria-label="Mascote Robô IA">
+              <!-- SVG Customizado do Robô com Antena e Sorriso Expressivo -->
+              <svg class="w-11 h-11 text-slate-800 dark:text-slate-100 transition-transform group-hover:scale-105" viewBox="0 0 64 64" fill="none">
+                <!-- Antena -->
+                <line x1="32" y1="8" x2="32" y2="17" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>
+                <circle cx="32" cy="7" r="4" fill="#2563EB" stroke="currentColor" stroke-width="2.2"/>
+                <!-- Orelhas laterais -->
+                <rect x="8" y="28" width="5" height="12" rx="2.5" fill="#3B82F6" stroke="currentColor" stroke-width="2.2"/>
+                <rect x="51" y="28" width="5" height="12" rx="2.5" fill="#3B82F6" stroke="currentColor" stroke-width="2.2"/>
+                <!-- Cabeça -->
+                <rect x="13" y="17" width="38" height="36" rx="10" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="3.2"/>
+                <!-- Olhos expressivos -->
+                <circle cx="24" cy="29" r="3.5" fill="currentColor"/>
+                <circle cx="25" cy="28" r="1.2" fill="#FFFFFF"/>
+                <circle cx="40" cy="29" r="3.5" fill="currentColor"/>
+                <circle cx="41" cy="28" r="1.2" fill="#FFFFFF"/>
+                <!-- Sorriso gradeado estilo robô -->
+                <rect x="21" y="39" width="22" height="7" rx="3.5" fill="#FFFFFF" stroke="currentColor" stroke-width="2.4"/>
+                <line x1="28" y1="39" x2="28" y2="46" stroke="currentColor" stroke-width="2"/>
+                <line x1="36" y1="39" x2="36" y2="46" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+
+            <!-- Balão de Fala Reativo -->
+            <button type="button" onclick="cycleRobotQuote()" class="tactile-btn liquid-glass px-4 py-2.5 rounded-2xl rounded-bl-sm text-left flex-1 sm:flex-initial">
+              <p class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100" id="robot-speech-text">"Vamos nessa! Faça o seu primeiro lance."</p>
+              <span class="font-mono text-[10px] text-blue-600 dark:text-blue-400" id="robot-speech-sub">IA Nível 6 • Pronta para jogar</span>
+            </button>
+          </div>
+
+          <!-- Container do Tabuleiro 8x8 em Liquid Glass -->
+          <div id="board-theme-wrapper" class="theme-slate liquid-glass rounded-[26px] p-3.5 sm:p-5">
+            <!-- Barra Superior do Card do Tabuleiro (Idêntica ao traço superior em 1001286289.png) -->
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-20 h-1.5 rounded-full bg-slate-800 dark:bg-slate-200"></div>
+              <span class="font-mono text-[11px] font-bold text-slate-500 dark:text-slate-400" id="turn-badge-header">TURNO 01 • CLARAS</span>
+            </div>
+
+            <!-- Tabuleiro 8x8 Responsivo -->
+            <div class="board-frame max-w-[490px] mx-auto">
+              <div id="chessboard-grid" class="grid grid-cols-8 w-full overflow-hidden rounded-xl border border-black/20">
+                <!-- 64 Casas geradas dinamicamente via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Player 1 HUD Card (Idêntico à base de 1001286289.png) -->
+          <div class="liquid-glass rounded-2xl p-3 sm:p-3.5 flex flex-wrap items-center justify-between gap-2.5">
+            <div class="flex items-center gap-2.5">
+              <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
+                J1
+              </div>
+              <div>
+                <div class="text-sm font-extrabold leading-tight">Jogador 1</div>
+                <div class="text-[11px] text-blue-600 dark:text-blue-400 font-bold" id="player1-turn-label">Sua vez • Claras</div>
+              </div>
+            </div>
+
+            <!-- Pontos & Cronômetro do Jogador 1 -->
+            <div class="flex items-center gap-2.5 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-xl border border-slate-400/15">
+              <div class="flex items-center gap-1.5 pr-2.5 border-r border-slate-400/20">
+                <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+                </span>
+                <span class="font-mono text-xs font-bold tabular-nums" id="player-score-display">120 PONTOS</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                </span>
+                <span class="font-mono text-xs font-bold tabular-nums" id="player-timer-display">15:00</span>
+              </div>
+            </div>
+
+            <!-- Botão Desfazer Lance (↶) -->
+            <button onclick="undoLastMove()" title="Desfazer Última Jogada" class="tactile-btn w-9 h-9 rounded-xl bg-white/60 dark:bg-white/10 hover:bg-blue-600 hover:text-white flex items-center justify-center border border-slate-400/20" aria-label="Desfazer Jogada">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/>
+              </svg>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Coluna Lateral (4 cols): Histórico de Lances, Peças Capturadas e Controles -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="liquid-glass rounded-[24px] p-5">
+            <div class="flex items-center justify-between">
+              <span class="eyebrow text-blue-600 dark:text-blue-400">Telemetria em Tempo Real</span>
+              <span class="font-mono text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-600/10 text-blue-600 dark:text-blue-400" id="active-skin-badge">CBURNETT</span>
+            </div>
+            <h3 class="text-lg font-extrabold mt-1">Histórico da Partida</h3>
+
+            <!-- Peças Capturadas -->
+            <div class="mt-3 p-3 rounded-xl bg-white/45 dark:bg-white/5 border border-slate-400/15 space-y-2">
+              <div class="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                <span>Capturadas por Você:</span>
+                <span class="font-mono" id="captured-by-player-count">0</span>
+              </div>
+              <div id="captured-by-player-list" class="flex flex-wrap gap-1 min-h-[24px]"></div>
+
+              <div class="border-t border-slate-400/15 pt-2 flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                <span>Capturadas pelo Oponente:</span>
+                <span class="font-mono" id="captured-by-opp-count">0</span>
+              </div>
+              <div id="captured-by-opp-list" class="flex flex-wrap gap-1 min-h-[24px]"></div>
+            </div>
+
+            <!-- Lista de Lances (Notação Algébrica) -->
+            <div id="move-history-list" class="mt-3 max-h-48 overflow-y-auto space-y-1.5 font-mono text-xs pr-1">
+              <div class="text-xs text-slate-400 py-2 text-center">Nenhum lance registrado ainda.</div>
+            </div>
+          </div>
+
+          <!-- Ações Rápidas da Partida -->
+          <div class="liquid-glass rounded-[24px] p-5 space-y-2.5">
+            <span class="eyebrow text-slate-500 dark:text-slate-400 block mb-1">Ações Rápidas</span>
+            <button onclick="startNewSession()" class="tactile-btn w-full py-3 px-4 rounded-xl bg-white/60 dark:bg-white/10 hover:bg-blue-600 hover:text-white border border-slate-400/20 text-xs font-bold flex items-center justify-between">
+              <span>Reiniciar Tabuleiro</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+            <button onclick="offerDraw()" class="tactile-btn w-full py-3 px-4 rounded-xl bg-white/60 dark:bg-white/10 hover:bg-amber-500/20 border border-slate-400/20 text-xs font-bold flex items-center justify-between">
+              <span>Propor Empate</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/></svg>
+            </button>
+            <button onclick="resignMatch()" class="tactile-btn w-full py-3 px-4 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center justify-between">
+              <span>Render-se</span>
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TELA 3: TEMAS & AJUSTES (1001286282.png + SELETOR DE SKINS svg.js)    -->
+    <!-- ===================================================================== -->
+    <section id="screen-settings" class="screen-view hidden screen-enter">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div>
+          <span class="eyebrow text-blue-600 dark:text-blue-400">Personalização & Preferências</span>
+          <h2 class="hero-title text-3xl sm:text-4xl mt-1">Temas & Ajustes</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Configure o comportamento do sistema e escolha entre os 4 estilos de peças em SVG.</p>
+        </div>
+
+        <!-- Pílulas Rápidas de Tema do Tabuleiro (Idênticas ao topo de 1001286282.png) -->
+        <div class="liquid-glass p-1.5 rounded-full flex items-center gap-1">
+          <button onclick="setBoardTheme('wood')" data-btheme="wood" class="btheme-pill tactile-btn px-3.5 py-1.5 rounded-full text-xs font-bold hover:bg-black/5 dark:hover:bg-white/10">Madeira</button>
+          <button onclick="setBoardTheme('slate')" data-btheme="slate" class="btheme-pill tactile-btn px-3.5 py-1.5 rounded-full text-xs font-bold bg-blue-600 text-white">Ardósia</button>
+          <button onclick="setBoardTheme('emerald')" data-btheme="emerald" class="btheme-pill tactile-btn px-3.5 py-1.5 rounded-full text-xs font-bold hover:bg-black/5 dark:hover:bg-white/10">Esmeralda</button>
+          <button onclick="setBoardTheme('glass')" data-btheme="glass" class="btheme-pill tactile-btn px-3.5 py-1.5 rounded-full text-xs font-bold hover:bg-black/5 dark:hover:bg-white/10">Glass</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+
+        <!-- Card Esquerdo: Preferências do Sistema & Ações da Sessão -->
+        <div class="md:col-span-6 liquid-glass rounded-[24px] p-6 space-y-5">
+          <h3 class="text-base font-extrabold border-b border-slate-400/20 pb-3">Preferências do Sistema</h3>
+
+          <!-- 1. Som & Áudio Espacial -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold">Som & Áudio Espacial</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Efeitos sonoros sutis nas interações</div>
+              </div>
+            </div>
+            <button type="button" id="toggle-sound" onclick="togglePreference('sound', this)" class="ios-switch active" aria-label="Alternar Som">
+              <span class="ios-switch-knob"></span>
+            </button>
+          </div>
+
+          <!-- 2. Vibração Tátil -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="6" y="3" width="12" height="18" rx="2"/><path d="M2 8v8"/><path d="M22 8v8"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold">Vibração Tátil (Haptics)</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Resposta física ao tocar nos botões</div>
+              </div>
+            </div>
+            <button type="button" id="toggle-haptics" onclick="togglePreference('haptics', this)" class="ios-switch active" aria-label="Alternar Vibração">
+              <span class="ios-switch-knob"></span>
+            </button>
+          </div>
+
+          <!-- 3. Dicas & Comentários do Coach -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold">Dicas & Comentários do Coach</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Exibe balões de orientação durante a partida</div>
+              </div>
+            </div>
+            <button type="button" id="toggle-coach" onclick="togglePreference('coach', this)" class="ios-switch active" aria-label="Alternar Coach">
+              <span class="ios-switch-knob"></span>
+            </button>
+          </div>
+
+          <!-- 4. Modo Escuro OLED -->
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="text-sm font-bold">Modo Escuro OLED (#09090B)</div>
+                <div class="text-xs text-slate-500 dark:text-slate-400">Alto contraste com painéis de vidro fosco</div>
+              </div>
+            </div>
+            <button type="button" id="settings-theme-switch" onclick="toggleTheme()" class="ios-switch" aria-label="Alternar Tema Escuro">
+              <span class="ios-switch-knob"></span>
+            </button>
+          </div>
+
+          <!-- AÇÕES DA SESSÃO (Render-se, Salvar, Início) -->
+          <div class="pt-4 border-t border-slate-400/20">
+            <span class="eyebrow text-slate-500 dark:text-slate-400 block mb-3">Ações da Sessão</span>
+            <div class="grid grid-cols-3 gap-2.5">
+              <button onclick="resignMatch()" class="tactile-btn p-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/25 text-rose-600 dark:text-rose-400 flex flex-col items-center gap-1.5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+                </svg>
+                <span class="text-xs font-bold">Render-se</span>
+              </button>
+
+              <button onclick="saveSessionToStorage()" class="tactile-btn p-3 rounded-2xl bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/25 text-blue-600 dark:text-blue-400 flex flex-col items-center gap-1.5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span class="text-xs font-bold" id="save-btn-label">Salvar</span>
+              </button>
+
+              <button onclick="navigateTo('menu')" class="tactile-btn p-3 rounded-2xl bg-white/50 dark:bg-white/10 hover:bg-white/80 dark:hover:bg-white/15 border border-slate-400/20 flex flex-col items-center gap-1.5">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                </svg>
+                <span class="text-xs font-bold">Início</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Direito: Texturas & Acabamentos + Prévia Real das Peças SVG -->
+        <div class="md:col-span-6 liquid-glass rounded-[24px] p-6 flex flex-col justify-between space-y-6">
+          <div>
+            <h3 class="text-base font-extrabold border-b border-slate-400/20 pb-3">Texturas & Acabamentos</h3>
+
+            <!-- TEMA ARENA -->
+            <div class="mt-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">TEMA ARENA</span>
+                <span id="settings-board-name" class="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">Ardósia Escura</span>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 bg-white/50 dark:bg-black/25 p-4 rounded-2xl border border-slate-400/15">
+                <button onclick="cycleBoardTheme(-1)" class="tactile-btn w-11 h-11 rounded-xl liquid-glass flex items-center justify-center hover:bg-blue-600 hover:text-white" aria-label="Tema anterior">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+
+                <div class="flex items-center gap-3">
+                  <div id="swatch-light" class="w-16 h-16 rounded-2xl swatch-slate-light shadow-md border border-slate-300/60 transition-all duration-300"></div>
+                  <div id="swatch-dark" class="w-16 h-16 rounded-2xl swatch-slate-dark shadow-md border border-white/20 transition-all duration-300"></div>
+                </div>
+
+                <button onclick="cycleBoardTheme(1)" class="tactile-btn w-11 h-11 rounded-xl liquid-glass flex items-center justify-center hover:bg-blue-600 hover:text-white" aria-label="Próximo tema">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- ESTILO PEÇAS / AVATAR (Vinculado diretamente ao svg.js) -->
+            <div class="mt-5">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">ESTILO PEÇAS (SVG.JS)</span>
+                <span id="settings-piece-name" class="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">Cburnett Clássico</span>
+              </div>
+
+              <div class="flex items-center justify-between gap-4 bg-white/50 dark:bg-black/25 p-4 rounded-2xl border border-slate-400/15">
+                <button onclick="cyclePieceTheme(-1)" class="tactile-btn w-11 h-11 rounded-xl liquid-glass flex items-center justify-center hover:bg-blue-600 hover:text-white" aria-label="Estilo anterior">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+
+                <!-- Prévia Ao Vivo das Peças Reais do svg.js (Rei Branco & Rei Preto) -->
+                <div class="flex items-center gap-3" id="svg-piece-theme-preview">
+                  <!-- Preenchido via JS com getPieceSVG() -->
+                </div>
+
+                <button onclick="cyclePieceTheme(1)" class="tactile-btn w-11 h-11 rounded-xl liquid-glass flex items-center justify-center hover:bg-blue-600 hover:text-white" aria-label="Próximo estilo">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button onclick="navigateTo('match')" class="btn-premium w-full py-3.5 px-5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 cursor-pointer">
+            <span>Aplicar na Arena</span>
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- TELA 4: RESULTADOS — BENTO GRID + PONTOS • 75 (1001286283.png)        -->
+    <!-- ===================================================================== -->
+    <section id="screen-outcomes" class="screen-view hidden screen-enter">
+      <div class="flex flex-wrap items-end justify-between gap-4 mb-7">
+        <div class="max-w-xl">
+          <span class="eyebrow text-amber-600 dark:text-amber-400">Desfecho da Sessão • Bento Grid</span>
+          <h2 class="hero-title text-3xl sm:text-4xl mt-1">Desfecho da Partida</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1.5" id="outcome-subtitle">
+            Visualização dos três cenários finais projetados para o aplicativo (Vitória, Derrota e Empate).
+          </p>
+        </div>
+
+        <!-- Contador Global PONTOS • 75 (Conforme anotação manuscrita em 1001286283.png) -->
+        <div class="liquid-glass px-5 py-3 rounded-2xl border border-amber-500/30 flex items-center gap-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <span class="font-mono text-lg sm:text-xl font-extrabold tracking-tight tabular-nums" id="outcomes-total-points">PONTOS • 75</span>
+        </div>
+      </div>
+
+      <!-- Bento Grid Assimétrico (Vitória, Derrota, Empate) -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+
+        <!-- Card 1: VITÓRIA! -->
+        <div id="outcome-card-victory" class="md:col-span-5 liquid-glass liquid-card-hover rounded-[24px] p-6 text-center relative overflow-hidden flex flex-col justify-between border-2 border-amber-500/40">
+          <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-44 h-44 rounded-full bg-amber-400/20 blur-2xl pointer-events-none"></div>
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-slate-400/20 mb-4">
+              <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <span class="font-mono text-[11px] font-bold tabular-nums" id="victory-time-badge">0:36.5</span>
+            </div>
+
+            <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-amber-400/25 to-amber-600/10 border border-amber-500/30 flex items-center justify-center mb-4 text-amber-500">
+              <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+              </svg>
+            </div>
+
+            <h3 class="hero-title text-2xl tracking-tight">VITÓRIA!</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Sessão concluída com vantagem máxima e bônus de precisão.</p>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-400/20">
+            <div class="font-mono text-sm font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mb-3">+120 PONTOS</div>
+            <button onclick="navigateTo('menu')" class="btn-premium w-full py-2.5 px-4 rounded-xl text-xs font-bold cursor-pointer">
+              Voltar ao Início
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 2: DERROTA -->
+        <div id="outcome-card-defeat" class="md:col-span-4 liquid-glass liquid-card-hover rounded-[24px] p-6 text-center relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-44 h-44 rounded-full bg-rose-500/15 blur-2xl pointer-events-none"></div>
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-slate-400/20 mb-4">
+              <svg class="w-3.5 h-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <span class="font-mono text-[11px] font-bold tabular-nums" id="defeat-time-badge">0:36.5</span>
+            </div>
+
+            <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-rose-500/20 to-rose-700/10 border border-rose-500/30 flex items-center justify-center mb-4 text-rose-500">
+              <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>
+              </svg>
+            </div>
+
+            <h3 class="hero-title text-2xl tracking-tight">DERROTA</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">O oponente garantiu a rodada. Revise os turnos e tente uma revanche.</p>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-400/20">
+            <div class="font-mono text-sm font-bold text-rose-600 dark:text-rose-400 tabular-nums mb-3">-35 PONTOS</div>
+            <button onclick="navigateTo('menu')" class="tactile-btn w-full py-2.5 px-4 rounded-xl border border-slate-400/30 hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold">
+              Voltar ao Início
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 3: EMPATE -->
+        <div id="outcome-card-draw" class="md:col-span-3 liquid-glass liquid-card-hover rounded-[24px] p-6 text-center relative overflow-hidden flex flex-col justify-between">
+          <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-44 h-44 rounded-full bg-blue-500/15 blur-2xl pointer-events-none"></div>
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/5 dark:bg-white/10 border border-slate-400/20 mb-4">
+              <svg class="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+              <span class="font-mono text-[11px] font-bold tabular-nums" id="draw-time-badge">0:36.5</span>
+            </div>
+
+            <div class="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-700/10 border border-blue-500/30 flex items-center justify-center mb-4 text-blue-500">
+              <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/>
+              </svg>
+            </div>
+
+            <h3 class="hero-title text-2xl tracking-tight">EMPATE</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">Equilíbrio técnico absoluto por acordo mútuo.</p>
+          </div>
+
+          <div class="mt-5 pt-4 border-t border-slate-400/20">
+            <div class="font-mono text-sm font-bold text-blue-600 dark:text-blue-400 tabular-nums mb-3">+15 PONTOS</div>
+            <button onclick="navigateTo('menu')" class="tactile-btn w-full py-2.5 px-4 rounded-xl border border-slate-400/30 hover:bg-black/5 dark:hover:bg-white/10 text-xs font-bold">
+              Voltar ao Início
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL DE PROMOÇÃO DO PEÃO (SVG INTERATIVO)                            -->
+  <!-- ===================================================================== -->
+  <div id="promotion-modal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="liquid-glass rounded-[28px] p-6 max-w-sm w-full text-center shadow-2xl screen-enter">
+      <span class="eyebrow text-blue-600 dark:text-blue-400">Promoção de Peão</span>
+      <h3 class="text-xl font-extrabold mt-1">Escolha a Nova Peça</h3>
+      <div id="promotion-choices" class="grid grid-cols-4 gap-3 mt-5">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- BOTÃO FLUTUANTE ESCUDO LGPD (CANTO INFERIOR ESQUERDO)                 -->
+  <!-- ===================================================================== -->
+  <button onclick="openLgpdModal()" title="Privacidade e Proteção de Dados (LGPD)" class="tactile-btn fixed bottom-5 left-5 z-40 w-12 h-12 rounded-full btn-premium flex items-center justify-center shadow-xl cursor-pointer" aria-label="Preferências de Privacidade LGPD">
+    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      <path d="m9 12 2 2 4-4"/>
+    </svg>
+  </button>
+
+  <!-- Rodapé Técnico -->
+  <footer class="max-w-5xl mx-auto px-6 pb-8 text-center sm:text-right">
+    <p class="font-mono text-[11px] text-slate-500 dark:text-slate-400">
+      XADRA • Apple Liquid Glass Design System • Motor IA Minimax Alfa-Beta • LGPD (Lei nº 13.709/2018)
+    </p>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL DE PRIVACIDADE LGPD & ECA (SEM DARK PATTERNS)                   -->
+  <!-- ===================================================================== -->
+  <div id="lgpd-modal-backdrop" class="hidden fixed inset-0 z-50 bg-slate-950/55 backdrop-blur-md flex items-end sm:items-center justify-center p-4 transition-opacity duration-300">
+    <div class="liquid-glass w-full max-w-xl rounded-[28px] p-6 sm:p-7 shadow-2xl border border-white/30 dark:border-white/15 max-h-[90vh] overflow-y-auto screen-enter" role="dialog" aria-modal="true" aria-labelledby="lgpd-title">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-md">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <div>
+            <span class="eyebrow text-blue-600 dark:text-blue-400">Lei nº 13.709/2018 • Brasil</span>
+            <h2 id="lgpd-title" class="text-xl font-extrabold tracking-tight">Privacidade e Proteção de Dados</h2>
+          </div>
+        </div>
+        <button onclick="closeLgpdModal()" class="tactile-btn p-2 rounded-xl hover:bg-black/5 dark:hover:bg-white/10" aria-label="Fechar">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-4 leading-relaxed">
+        Em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD)</strong>, utilizamos armazenamento local exclusivamente para salvar sua pontuação, temas e rascunhos de partida. Você pode ajustar ou revogar seu consentimento a qualquer momento.
+      </p>
+
+      <div class="mt-5 space-y-3">
+        <div class="p-3.5 rounded-2xl bg-white/45 dark:bg-white/5 border border-slate-400/20 flex items-center justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-sm font-bold">Cookies Estritamente Necessários</span>
+              <span class="font-mono text-[10px] px-2 py-0.5 rounded-full bg-slate-500/15 text-slate-600 dark:text-slate-300 font-semibold">SEMPRE ATIVO</span>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Essenciais para segurança da sessão e funcionamento do motor do jogo.</p>
+          </div>
+          <div class="ios-switch active opacity-60 cursor-not-allowed">
+            <span class="ios-switch-knob"></span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-white/45 dark:bg-white/5 border border-slate-400/20 flex items-center justify-between gap-3">
+          <div>
+            <div class="text-xs sm:text-sm font-bold">Preferências e Progresso Local</div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Salva skins escolhidas, modo claro/escuro e pontuação acumulada.</p>
+          </div>
+          <button type="button" id="lgpd-toggle-functional" onclick="toggleIosSwitch(this)" class="ios-switch active" aria-label="Alternar Preferências">
+            <span class="ios-switch-knob"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-2.5">
+        <svg class="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <p class="text-[11px] text-slate-700 dark:text-slate-300 leading-relaxed">
+          <strong>Classificação Livre • Art. 14 da LGPD & ECA:</strong> Nenhuma informação pessoal identificável de crianças ou adolescentes é coletada ou compartilhada com terceiros.
+        </p>
+      </div>
+
+      <!-- Botões Equilibrados (Sem Dark Patterns) -->
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button onclick="handleLgpdChoice('essential')" class="tactile-btn py-3 px-4 rounded-xl border border-blue-600/45 bg-blue-600/10 text-blue-700 dark:text-blue-300 hover:bg-blue-600/20 text-xs font-bold cursor-pointer">
+          Aceitar Essenciais
+        </button>
+        <button onclick="handleLgpdChoice('all')" class="tactile-btn py-3 px-4 rounded-xl border border-blue-600/45 bg-blue-600/10 text-blue-700 dark:text-blue-300 hover:bg-blue-600/20 text-xs font-bold cursor-pointer">
+          Aceitar Tudo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- BIBLIOTECA SVG.JS INTEGRADA + MOTOR COMPLETO DE XADREZ & IA MINIMAX   -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * 1. BIBLIOTECA DE PEÇAS DE XADREZ EM SVG (svg.js integrado)
+     * Todos os 48 SVGs dos 4 temas: cburnett, neo, volumetric, iceOnyx
+     */
+    const CHESS_PIECES_SVG = {
+      // Tema 1: Cburnett Clássico (Padrão do tabuleiro 1001286289.png)
+      cburnett: {
+        wP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><path d="M22.5 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38C17.33 16.5 16 18.59 16 21c0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z" fill="#FFFFFF" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+        bP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><path d="M22.5 9c-2.21 0-4 1.79-4 4 0 .89.29 1.71.78 2.38C17.33 16.5 16 18.59 16 21c0 2.03.94 3.84 2.41 5.03-3 1.06-7.41 5.55-7.41 13.47h23c0-7.92-4.41-12.41-7.41-13.47 1.47-1.19 2.41-3 2.41-5.03 0-2.41-1.33-4.5-3.28-5.62.49-.67.78-1.49.78-2.38 0-2.21-1.79-4-4-4z" fill="#000000" stroke="#000000" stroke-width="1.6" stroke-linecap="round"/></svg>`,
+        wR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="#FFFFFF" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 39h27v-3H9v3zM12 36v-4h21v4H12zM11 14V9h4v2h5V9h5v2h5V9h4v5"/><path d="M34 14l-3 3H14l-3-3"/><path d="M31 17v12.5H14V17"/><path d="M31 29.5l1.5 2.5h-20l1.5-2.5"/><path d="M11 14h23" fill="none" stroke-linejoin="miter"/></g></svg>`,
+        bR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="#000000" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 39h27v-3H9v3zM12.5 32l1.5-2.5h17l1.5 2.5h-20zM12 36v-4h21v4H12z"/><path d="M14 29.5v-13h17v13H14z" stroke-linecap="butt" stroke-linejoin="miter"/><path d="M14 16.5L11 14h23l-3 2.5H14zM11 14V9h4v2h5V9h5v2h5V9h4v5H11z" stroke-linecap="butt"/><path d="M12 35.5h21M13 31.5h19M14 29.5h17M14 16.5h17M11 14h23" fill="none" stroke="#FFFFFF" stroke-width="1.1" stroke-linejoin="miter"/></g></svg>`,
+        wN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21" fill="#FFFFFF"/><path d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.042-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4.003 1-4-4 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-.994-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-1.992 2.5-3c1 0 1 3 1 3" fill="#FFFFFF"/><circle cx="9.5" cy="25.5" r=".6" fill="#000000"/><ellipse cx="14.93" cy="15.75" rx=".6" ry="1.5" transform="rotate(30 14.93 15.75)" fill="#000000"/></g></svg>`,
+        bN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 8-21" fill="#000000"/><path d="M24 18c.38 2.91-5.55 7.37-8 9-3 2-2.82 4.34-5 4-1.042-.94 1.41-3.04 0-3-1 0 .19 1.23-1 2-1 0-4.003 1-4-4 0-2 6-12 6-12s1.89-1.9 2-3.5c-.73-.994-.5-2-.5-3 1-1 3 2.5 3 2.5h2s.78-1.992 2.5-3c1 0 1 3 1 3" fill="#000000"/><circle cx="9.5" cy="25.5" r=".6" fill="#FFFFFF" stroke="#FFFFFF"/><ellipse cx="14.93" cy="15.75" rx=".6" ry="1.5" transform="rotate(30 14.93 15.75)" fill="#FFFFFF" stroke="#FFFFFF"/><path d="M24.55 10.4l-.45 1.45.5.15c3.15 1 5.65 2.49 7.9 6.75S35.75 29.06 35.25 39l-.05.5h2.25l.05-.5c.5-10.06-.88-16.85-3.25-21.34-2.37-4.49-5.79-6.64-9.19-7.16l-.51-.1z" fill="#FFFFFF" stroke="none"/></g></svg>`,
+        wB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g fill="#FFFFFF" stroke-linecap="butt"><path d="M9 36c3.39-.97 10.11.43 13.5-2 3.39 2.43 10.11 1.03 13.5 2 0 0 1.65.54 3 2-.68.97-1.65.99-3 .5-3.39-.97-10.11.46-13.5-1-3.39 1.46-10.11.03-13.5 1-1.354.49-2.323.47-3-.5 1.354-1.94 3-2 3-2z"/><path d="M15 32c2.5 2.5 12.5 2.5 15 0 .5-1.5 0-2 0-2 0-2.5-2.5-4-2.5-4 5.5-1.5 6-11.5-5-15.5-11 4-10.5 14-5 15.5 0 0-2.5 1.5-2.5 4 0 0-.5.5 0 2z"/><circle cx="22.5" cy="8" r="2.5"/></g><path d="M17.5 26h10M15 30h15m-7.5-14.5v5M20 18h5" stroke-linejoin="miter"/></g></svg>`,
+        bB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><g fill="#000000" stroke-linecap="butt"><path d="M9 36c3.39-.97 10.11.43 13.5-2 3.39 2.43 10.11 1.03 13.5 2 0 0 1.65.54 3 2-.68.97-1.65.99-3 .5-3.39-.97-10.11.46-13.5-1-3.39 1.46-10.11.03-13.5 1-1.354.49-2.323.47-3-.5 1.354-1.94 3-2 3-2z"/><path d="M15 32c2.5 2.5 12.5 2.5 15 0 .5-1.5 0-2 0-2 0-2.5-2.5-4-2.5-4 5.5-1.5 6-11.5-5-15.5-11 4-10.5 14-5 15.5 0 0-2.5 1.5-2.5 4 0 0-.5.5 0 2z"/><circle cx="22.5" cy="8" r="2.5"/></g><path d="M17.5 26h10M15 30h15m-7.5-14.5v5M20 18h5" stroke="#FFFFFF" stroke-linejoin="miter"/></g></svg>`,
+        wQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="#FFFFFF" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2"/><circle cx="14" cy="9" r="2"/><circle cx="22.5" cy="8" r="2"/><circle cx="31" cy="9" r="2"/><circle cx="39" cy="12" r="2"/><path d="M9 26c8.5-1.5 21-1.5 27 0l2-12-7 11V11l-5.5 13.5-3-15-3 15-5.5-14V25L7 14l2 12z" stroke-linecap="butt"/><path d="M9 26c0 2 1.5 2 2.5 4 1 1.5 1 1 .5 3.5-1.5 1-1.5 2.5-1.5 2.5-1.5 1.5.5 2.5.5 2.5 6.5 1 16.5 1 23 0 0 0 1.5-1 0-2.5 0 0 .5-1.5-1-2.5-.5-2.5-.5-2 .5-3.5 1-2 2.5-2 2.5-4-8.5-1.5-18.5-1.5-27 0z" stroke-linecap="butt"/><path d="M11.5 30c3.5-1 18.5-1 22 0M12 33.5c6-1 15-1 21 0" fill="none"/></g></svg>`,
+        bQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="#000000" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="12" r="2"/><circle cx="14" cy="9" r="2"/><circle cx="22.5" cy="8" r="2"/><circle cx="31" cy="9" r="2"/><circle cx="39" cy="12" r="2"/><path d="M9 26c8.5-1.5 21-1.5 27 0l2.5-12.5L31 25l-.3-14.1-5.2 13.6-3-14.5-3 14.5-5.2-13.6L14 25 6.5 13.5 9 26z" stroke-linecap="butt"/><path d="M9 26c0 2 1.5 2 2.5 4 1 1.5 1 1 .5 3.5-1.5 1-1.5 2.5-1.5 2.5-1.5 1.5.5 2.5.5 2.5 6.5 1 16.5 1 23 0 0 0 1.5-1 0-2.5 0 0 .5-1.5-1-2.5-.5-2.5-.5-2 .5-3.5 1-2 2.5-2 2.5-4-8.5-1.5-18.5-1.5-27 0z" stroke-linecap="butt"/><path d="M11 38.5a35 35 1 0 0 23 0" fill="none" stroke-linecap="butt"/><path d="M11 29a35 35 1 0 1 23 0M12.5 31.5h20M11.5 34.5a35 35 1 0 0 22 0M10.5 37.5a35 35 1 0 0 24 0" fill="none" stroke="#FFFFFF"/></g></svg>`,
+        wK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22.5 11.63V6M20 8h5" stroke-linejoin="miter"/><path d="M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5" fill="#FFFFFF" stroke-linecap="butt" stroke-linejoin="miter"/><path d="M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10V37z" fill="#FFFFFF"/><path d="M11.5 30c5.5-3 15.5-3 21 0M11.5 33.5c5.5-3 15.5-3 21 0M11.5 37c5.5-3 15.5-3 21 0"/></g></svg>`,
+        bK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g fill="none" stroke="#000000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22.5 11.63V6" stroke-linejoin="miter"/><path d="M22.5 25s4.5-7.5 3-10.5c0 0-1-2.5-3-2.5s-3 2.5-3 2.5c-1.5 3 3 10.5 3 10.5" fill="#000000" stroke-linecap="butt" stroke-linejoin="miter"/><path d="M11.5 37c5.5 3.5 15.5 3.5 21 0v-7s9-4.5 6-10.5c-4-6.5-13.5-3.5-16 4V27v-3.5c-3.5-7.5-13-10.5-16-4-3 6 5 10 5 10V37z" fill="#000000"/><path d="M20 8h5" stroke-linejoin="miter"/><path d="M32 29.5s8.5-4 6.03-9.65C34.15 14 25 18 22.5 24.5l.01 2.1-.01-2.1C20 18 9.906 14 6.997 19.85c-2.497 5.65 4.853 9 4.853 9" stroke="#FFFFFF"/><path d="M11.5 30c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0m-21 3.5c5.5-3 15.5-3 21 0" stroke="#FFFFFF"/></g></svg>`
+      },
+
+      // Tema 2: Neo / Staunton Moderno
+      neo: {
+        wP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M16 55 C16 49 20 45 25 43 C23 41 22 39 22 37 C22 35 24 33 26 32 C23 30 22 27 22 24 C22 18 26.5 14 32 14 C37.5 14 42 18 42 24 C42 27 41 30 38 32 C40 33 42 35 42 37 C42 39 41 41 39 43 C44 45 48 49 48 55 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.5" stroke-linejoin="round"/><path d="M36 16 C39 18 40.5 21 40.5 24 C40.5 27 39 29.5 36.5 31.5 C39 33 40.5 35 40.5 37 C40.5 39 39 41 37 42.5 C42 44.5 45.5 48.5 46 53.5 H35 C37 49 36 45 33 43 C35 41 36 39 36 37 C36 35 34.5 33 32.5 32 C35.5 30 36.5 27 36.5 24 C36.5 20.5 35.5 18 36 16 Z" fill="#E2E2E0"/><line x1="25" y1="32" x2="39" y2="32" stroke="#2C2B29" stroke-width="2" stroke-linecap="round"/><line x1="24" y1="43" x2="40" y2="43" stroke="#2C2B29" stroke-width="2" stroke-linecap="round"/></svg>`,
+        bP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M16 55 C16 49 20 45 25 43 C23 41 22 39 22 37 C22 35 24 33 26 32 C23 30 22 27 22 24 C22 18 26.5 14 32 14 C37.5 14 42 18 42 24 C42 27 41 30 38 32 C40 33 42 35 42 37 C42 39 41 41 39 43 C44 45 48 49 48 55 Z" fill="#585654" stroke="#262523" stroke-width="2.5" stroke-linejoin="round"/><path d="M36 16 C39 18 40.5 21 40.5 24 C40.5 27 39 29.5 36.5 31.5 C39 33 40.5 35 40.5 37 C40.5 39 39 41 37 42.5 C42 44.5 45.5 48.5 46 53.5 H35 C37 49 36 45 33 43 C35 41 36 39 36 37 C36 35 34.5 33 32.5 32 C35.5 30 36.5 27 36.5 24 C36.5 20.5 35.5 18 36 16 Z" fill="#43413F"/><line x1="25" y1="32" x2="39" y2="32" stroke="#262523" stroke-width="2" stroke-linecap="round"/><line x1="24" y1="43" x2="40" y2="43" stroke="#262523" stroke-width="2" stroke-linecap="round"/></svg>`,
+        wR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M18 12 H24 V17 H29 V12 H35 V17 H40 V12 H46 V23 L42 27 V43 L46 47 V50 H49 V55 H15 V50 H18 V47 L22 43 V27 L18 23 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.5" stroke-linejoin="round"/><path d="M40 13.5 H44.5 V22.5 L40.5 26.5 V43.5 L44.5 47.5 V50 H47.5 V53.5 H36 V50 H38 V47.5 L36 43.5 V26.5 L39 22.5 V13.5 Z" fill="#E2E2E0"/><line x1="22" y1="27" x2="42" y2="27" stroke="#2C2B29" stroke-width="2"/><line x1="22" y1="43" x2="42" y2="43" stroke="#2C2B29" stroke-width="2"/><line x1="18" y1="50" x2="46" y2="50" stroke="#2C2B29" stroke-width="2"/></svg>`,
+        bR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M18 12 H24 V17 H29 V12 H35 V17 H40 V12 H46 V23 L42 27 V43 L46 47 V50 H49 V55 H15 V50 H18 V47 L22 43 V27 L18 23 Z" fill="#585654" stroke="#262523" stroke-width="2.5" stroke-linejoin="round"/><path d="M40 13.5 H44.5 V22.5 L40.5 26.5 V43.5 L44.5 47.5 V50 H47.5 V53.5 H36 V50 H38 V47.5 L36 43.5 V26.5 L39 22.5 V13.5 Z" fill="#43413F"/><line x1="22" y1="27" x2="42" y2="27" stroke="#262523" stroke-width="2"/><line x1="22" y1="43" x2="42" y2="43" stroke="#262523" stroke-width="2"/><line x1="18" y1="50" x2="46" y2="50" stroke="#262523" stroke-width="2"/></svg>`,
+        wN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M17 55 V50 L21 47 C22 41 27 37 31 33 C27 33 22 35 18 33 C15 31 15 27 18 24 L23 18 L22 11 L28 15 C37 15 46 21 47 34 C48 41 46 45 45 47 L48 50 V55 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.5" stroke-linejoin="round"/><path d="M35 17 C41 20 45 26 45.5 34 C46 40 44.5 44 43.5 46.5 L46.5 49.5 V53.5 H37 V49.5 L39 46.5 C40.5 42 41 35 39 28 C37.5 22 35 19 35 17 Z" fill="#E2E2E0"/><circle cx="24.5" cy="22.5" r="1.8" fill="#2C2B29"/><line x1="20" y1="48.5" x2="46" y2="48.5" stroke="#2C2B29" stroke-width="2"/></svg>`,
+        bN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M17 55 V50 L21 47 C22 41 27 37 31 33 C27 33 22 35 18 33 C15 31 15 27 18 24 L23 18 L22 11 L28 15 C37 15 46 21 47 34 C48 41 46 45 45 47 L48 50 V55 Z" fill="#585654" stroke="#262523" stroke-width="2.5" stroke-linejoin="round"/><path d="M35 17 C41 20 45 26 45.5 34 C46 40 44.5 44 43.5 46.5 L46.5 49.5 V53.5 H37 V49.5 L39 46.5 C40.5 42 41 35 39 28 C37.5 22 35 19 35 17 Z" fill="#43413F"/><circle cx="24.5" cy="22.5" r="1.8" fill="#E2E2E0"/><line x1="20" y1="48.5" x2="46" y2="48.5" stroke="#262523" stroke-width="2"/></svg>`,
+        wB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="11.5" r="3" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.2"/><path d="M32 15 C23 21 20 29 24 38 L21 44 L17 48 V55 H47 V48 L43 44 L40 38 C44 29 41 21 32 15 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.5" stroke-linejoin="round"/><path d="M34 17.5 C39.5 22.5 41.5 29.5 38.5 37.5 L41.5 43.5 L45.5 47.5 V53.5 H36 V48 L34 44 L36 38 C38 30 36.5 23 34 17.5 Z" fill="#E2E2E0"/><path d="M34.5 22 L28.5 29" stroke="#2C2B29" stroke-width="2.4" stroke-linecap="round"/><line x1="23.5" y1="39" x2="40.5" y2="39" stroke="#2C2B29" stroke-width="2"/><line x1="20.5" y1="45" x2="43.5" y2="45" stroke="#2C2B29" stroke-width="2"/></svg>`,
+        bB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="11.5" r="3" fill="#585654" stroke="#262523" stroke-width="2.2"/><path d="M32 15 C23 21 20 29 24 38 L21 44 L17 48 V55 H47 V48 L43 44 L40 38 C44 29 41 21 32 15 Z" fill="#585654" stroke="#262523" stroke-width="2.5" stroke-linejoin="round"/><path d="M34 17.5 C39.5 22.5 41.5 29.5 38.5 37.5 L41.5 43.5 L45.5 47.5 V53.5 H36 V48 L34 44 L36 38 C38 30 36.5 23 34 17.5 Z" fill="#43413F"/><path d="M34.5 22 L28.5 29" stroke="#E2E2E0" stroke-width="2.4" stroke-linecap="round"/><line x1="23.5" y1="39" x2="40.5" y2="39" stroke="#262523" stroke-width="2"/><line x1="20.5" y1="45" x2="43.5" y2="45" stroke="#262523" stroke-width="2"/></svg>`,
+        wQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 22 L21 32 L25 16 L32 30 L39 16 L43 32 L52 22 L44 43 L47 48 V55 H17 V48 L20 43 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.5" stroke-linejoin="round"/><path d="M39 18.5 L42.5 32.5 L50 24 L42.5 43 L45.5 48 V53.5 H36 V48 L35 43 L39 32 Z" fill="#E2E2E0"/><circle cx="11.5" cy="20.5" r="2.2" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2"/><circle cx="24.5" cy="14.5" r="2.2" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2"/><circle cx="39.5" cy="14.5" r="2.2" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2"/><circle cx="52.5" cy="20.5" r="2.2" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2"/><line x1="20" y1="43" x2="44" y2="43" stroke="#2C2B29" stroke-width="2"/><line x1="18" y1="48.5" x2="46" y2="48.5" stroke="#2C2B29" stroke-width="2"/></svg>`,
+        bQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 22 L21 32 L25 16 L32 30 L39 16 L43 32 L52 22 L44 43 L47 48 V55 H17 V48 L20 43 Z" fill="#585654" stroke="#262523" stroke-width="2.5" stroke-linejoin="round"/><path d="M39 18.5 L42.5 32.5 L50 24 L42.5 43 L45.5 48 V53.5 H36 V48 L35 43 L39 32 Z" fill="#43413F"/><circle cx="11.5" cy="20.5" r="2.2" fill="#585654" stroke="#262523" stroke-width="2"/><circle cx="24.5" cy="14.5" r="2.2" fill="#585654" stroke="#262523" stroke-width="2"/><circle cx="39.5" cy="14.5" r="2.2" fill="#585654" stroke="#262523" stroke-width="2"/><circle cx="52.5" cy="20.5" r="2.2" fill="#585654" stroke="#262523" stroke-width="2"/><line x1="20" y1="43" x2="44" y2="43" stroke="#262523" stroke-width="2"/><line x1="18" y1="48.5" x2="46" y2="48.5" stroke="#262523" stroke-width="2"/></svg>`,
+        wK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M30 8 H34 V12 H38 V16 H34 V20 H30 V16 H26 V12 H30 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.2" stroke-linejoin="round"/><path d="M32 20 C26 20 24 24 24 27 C18 23 12 26 12 33 C12 39 18 42 21 44 L18 48 V55 H46 V48 L43 44 C46 42 52 39 52 33 C52 26 46 23 40 27 C40 24 38 20 32 20 Z" fill="#FFFFFF" stroke="#2C2B29" stroke-width="2.5" stroke-linejoin="round"/><path d="M35 21.5 C38 22.5 39.5 25 39.5 28 C44.5 25 50 27.5 50 33 C50 38 45 41 42 43.5 L44.5 48 V53.5 H36 V48 L35 43.5 C38 40 40 36 39 30 C38 26 36.5 23 35 21.5 Z" fill="#E2E2E0"/><path d="M26 28 C29 31 32 36 32 42 C32 36 35 31 38 28" fill="none" stroke="#2C2B29" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="44" x2="43" y2="44" stroke="#2C2B29" stroke-width="2"/><line x1="18.5" y1="48.5" x2="45.5" y2="48.5" stroke="#2C2B29" stroke-width="2"/></svg>`,
+        bK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M30 8 H34 V12 H38 V16 H34 V20 H30 V16 H26 V12 H30 Z" fill="#585654" stroke="#262523" stroke-width="2.2" stroke-linejoin="round"/><path d="M32 20 C26 20 24 24 24 27 C18 23 12 26 12 33 C12 39 18 42 21 44 L18 48 V55 H46 V48 L43 44 C46 42 52 39 52 33 C52 26 46 23 40 27 C40 24 38 20 32 20 Z" fill="#585654" stroke="#262523" stroke-width="2.5" stroke-linejoin="round"/><path d="M35 21.5 C38 22.5 39.5 25 39.5 28 C44.5 25 50 27.5 50 33 C50 38 45 41 42 43.5 L44.5 48 V53.5 H36 V48 L35 43.5 C38 40 40 36 39 30 C38 26 36.5 23 35 21.5 Z" fill="#43413F"/><path d="M26 28 C29 31 32 36 32 42 C32 36 35 31 38 28" fill="none" stroke="#262523" stroke-width="2" stroke-linecap="round"/><line x1="21" y1="44" x2="43" y2="44" stroke="#262523" stroke-width="2"/><line x1="18.5" y1="48.5" x2="45.5" y2="48.5" stroke="#262523" stroke-width="2"/></svg>`
+      },
+
+      // Tema 3: Volumétrico Arredondado
+      volumetric: {
+        wP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volLightP" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="100%" stop-color="#CBD5E1"/></linearGradient></defs><ellipse cx="32" cy="56" rx="18" ry="4" fill="#0F172A" opacity="0.25"/><path d="M18 52 C18 44 23 39 27 36 C23 34 21 30 21 25 C21 19 26 14 32 14 C38 14 43 19 43 25 C43 30 41 34 37 36 C41 39 46 44 46 52 C46 54.5 43 56 32 56 C21 56 18 54.5 18 52 Z" fill="url(#volLightP)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><path d="M22 49 C24 44 27 41 32 41 C37 41 40 44 42 49 C39 51 25 51 22 49 Z" fill="#94A3B8" opacity="0.35"/><circle cx="28.5" cy="21.5" r="3" fill="#FFFFFF" opacity="0.8"/></svg>`,
+        bP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volDarkP" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><ellipse cx="32" cy="56" rx="18" ry="4" fill="#020617" opacity="0.45"/><path d="M18 52 C18 44 23 39 27 36 C23 34 21 30 21 25 C21 19 26 14 32 14 C38 14 43 19 43 25 C43 30 41 34 37 36 C41 39 46 44 46 52 C46 54.5 43 56 32 56 C21 56 18 54.5 18 52 Z" fill="url(#volDarkP)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><path d="M22 49 C24 44 27 41 32 41 C37 41 40 44 42 49 C39 51 25 51 22 49 Z" fill="#0F172A" opacity="0.45"/><circle cx="28.5" cy="21.5" r="3" fill="#CBD5E1" opacity="0.35"/></svg>`,
+        wR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volLightR" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="100%" stop-color="#CBD5E1"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#0F172A" opacity="0.25"/><path d="M16 14 H22 V19 H28 V14 H36 V19 H42 V14 H48 V26 C48 30 44 32 42 34 L44 47 C47 48 48 51 48 53 C48 55 42 56 32 56 C22 56 16 55 16 53 C16 51 17 48 20 47 L22 34 C20 32 16 30 16 26 Z" fill="url(#volLightR)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><rect x="22" y="34" width="20" height="5" rx="2.5" fill="#94A3B8" opacity="0.45"/><rect x="20" y="47" width="24" height="4" rx="2" fill="#94A3B8" opacity="0.35"/></svg>`,
+        bR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volDarkR" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#020617" opacity="0.45"/><path d="M16 14 H22 V19 H28 V14 H36 V19 H42 V14 H48 V26 C48 30 44 32 42 34 L44 47 C47 48 48 51 48 53 C48 55 42 56 32 56 C22 56 16 55 16 53 C16 51 17 48 20 47 L22 34 C20 32 16 30 16 26 Z" fill="url(#volDarkR)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><rect x="22" y="34" width="20" height="5" rx="2.5" fill="#0F172A" opacity="0.5"/><rect x="20" y="47" width="24" height="4" rx="2" fill="#0F172A" opacity="0.4"/></svg>`,
+        wN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volLightN" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="100%" stop-color="#CBD5E1"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#0F172A" opacity="0.25"/><path d="M22 55 C19 55 18 52 20 48 C23 42 27 38 28 33 C24 34 19 35 16 32 C14 30 14 26 17 23 L23 17 L23 11 L29 15 C37 15 46 21 47 33 C48 42 46 49 46 53 C46 55 41 56 32 56 Z" fill="url(#volLightN)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><circle cx="25" cy="22" r="2.2" fill="#475569"/><path d="M35 20 C40 24 42 32 41 44" fill="none" stroke="#94A3B8" stroke-width="3" stroke-linecap="round" opacity="0.45"/></svg>`,
+        bN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volDarkN" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#020617" opacity="0.45"/><path d="M22 55 C19 55 18 52 20 48 C23 42 27 38 28 33 C24 34 19 35 16 32 C14 30 14 26 17 23 L23 17 L23 11 L29 15 C37 15 46 21 47 33 C48 42 46 49 46 53 C46 55 41 56 32 56 Z" fill="url(#volDarkN)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><circle cx="25" cy="22" r="2.2" fill="#CBD5E1"/><path d="M35 20 C40 24 42 32 41 44" fill="none" stroke="#0F172A" stroke-width="3" stroke-linecap="round" opacity="0.5"/></svg>`,
+        wB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volLightB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="100%" stop-color="#CBD5E1"/></linearGradient></defs><ellipse cx="32" cy="56" rx="19" ry="4" fill="#0F172A" opacity="0.25"/><circle cx="32" cy="11" r="3.5" fill="url(#volLightB)" stroke="#94A3B8" stroke-width="2"/><path d="M32 15 C22 22 19 31 23 39 L20 48 C17 49 17 52 17 53 C17 55 23 56 32 56 C41 56 47 55 47 53 C47 52 47 49 44 48 L41 39 C45 31 42 22 32 15 Z" fill="url(#volLightB)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><path d="M35 22 L28 30" stroke="#64748B" stroke-width="2.5" stroke-linecap="round"/><rect x="23" y="39" width="18" height="4" rx="2" fill="#94A3B8" opacity="0.45"/></svg>`,
+        bB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volDarkB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><ellipse cx="32" cy="56" rx="19" ry="4" fill="#020617" opacity="0.45"/><circle cx="32" cy="11" r="3.5" fill="url(#volDarkB)" stroke="#94A3B8" stroke-width="2"/><path d="M32 15 C22 22 19 31 23 39 L20 48 C17 49 17 52 17 53 C17 55 23 56 32 56 C41 56 47 55 47 53 C47 52 47 49 44 48 L41 39 C45 31 42 22 32 15 Z" fill="url(#volDarkB)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><path d="M35 22 L28 30" stroke="#CBD5E1" stroke-width="2.5" stroke-linecap="round"/><rect x="23" y="39" width="18" height="4" rx="2" fill="#0F172A" opacity="0.5"/></svg>`,
+        wQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volLightQ" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="100%" stop-color="#CBD5E1"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#0F172A" opacity="0.25"/><path d="M13 21 L21 31 L26 17 L32 29 L38 17 L43 31 L51 21 L44 43 L46 49 C48 50 48 52 48 53 C48 55 41 56 32 56 C23 56 16 55 16 53 C16 52 16 50 18 49 L20 43 Z" fill="url(#volLightQ)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><circle cx="13" cy="19" r="2.2" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/><circle cx="26" cy="15" r="2.2" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/><circle cx="38" cy="15" r="2.2" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/><circle cx="51" cy="19" r="2.2" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/><ellipse cx="32" cy="36" rx="7" ry="5" fill="#94A3B8" opacity="0.4"/><rect x="20" y="43" width="24" height="4" rx="2" fill="#94A3B8" opacity="0.45"/></svg>`,
+        bQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volDarkQ" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#020617" opacity="0.45"/><path d="M13 21 L21 31 L26 17 L32 29 L38 17 L43 31 L51 21 L44 43 L46 49 C48 50 48 52 48 53 C48 55 41 56 32 56 C23 56 16 55 16 53 C16 52 16 50 18 49 L20 43 Z" fill="url(#volDarkQ)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><circle cx="13" cy="19" r="2.2" fill="#64748B" stroke="#94A3B8" stroke-width="1.5"/><circle cx="26" cy="15" r="2.2" fill="#64748B" stroke="#94A3B8" stroke-width="1.5"/><circle cx="38" cy="15" r="2.2" fill="#64748B" stroke="#94A3B8" stroke-width="1.5"/><circle cx="51" cy="19" r="2.2" fill="#64748B" stroke="#94A3B8" stroke-width="1.5"/><ellipse cx="32" cy="36" rx="7" ry="5" fill="#0F172A" opacity="0.5"/><rect x="20" y="43" width="24" height="4" rx="2" fill="#0F172A" opacity="0.5"/></svg>`,
+        wK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volLightK" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="100%" stop-color="#CBD5E1"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#0F172A" opacity="0.25"/><path d="M30 8 H34 V12 H38 V16 H34 V20 H30 V16 H26 V12 H30 Z" fill="url(#volLightK)" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/><path d="M32 21 C26 21 24 25 24 28 C19 25 14 27 14 33 C14 38 19 42 22 44 L20 49 C17 50 17 52 17 53 C17 55 23 56 32 56 C41 56 47 55 47 53 C47 52 47 50 44 49 L42 44 C45 42 50 38 50 33 C50 27 45 25 40 28 C40 25 38 21 32 21 Z" fill="url(#volLightK)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><rect x="21" y="43" width="22" height="4.5" rx="2.2" fill="#94A3B8" opacity="0.45"/></svg>`,
+        bK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="volDarkK" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient></defs><ellipse cx="32" cy="56" rx="20" ry="4" fill="#020617" opacity="0.45"/><path d="M30 8 H34 V12 H38 V16 H34 V20 H30 V16 H26 V12 H30 Z" fill="url(#volDarkK)" stroke="#94A3B8" stroke-width="1.8" stroke-linejoin="round"/><path d="M32 21 C26 21 24 25 24 28 C19 25 14 27 14 33 C14 38 19 42 22 44 L20 49 C17 50 17 52 17 53 C17 55 23 56 32 56 C41 56 47 55 47 53 C47 52 47 50 44 49 L42 44 C45 42 50 38 50 33 C50 27 45 25 40 28 C40 25 38 21 32 21 Z" fill="url(#volDarkK)" stroke="#94A3B8" stroke-width="2" stroke-linejoin="round"/><rect x="21" y="43" width="22" height="4.5" rx="2.2" fill="#0F172A" opacity="0.5"/></svg>`
+      },
+
+      // Tema 4: Azul-Gelo e Preto-Ônix
+      iceOnyx: {
+        wP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="whiteIceP" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="65%" stop-color="#EBF5FF"/><stop offset="100%" stop-color="#C2DDF5"/></linearGradient></defs><path d="M16 54 V49 C16 46 21 44 25 42 L26 33 H22 V29 H26 C24 27 23 24.5 23 22 C23 16.5 27 12.5 32 12.5 C37 12.5 41 16.5 41 22 C41 24.5 40 27 38 29 H42 V33 H38 L39 42 C43 44 48 46 48 49 V54 Z" fill="url(#whiteIceP)" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+        bP: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="blackOnyxP" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#52525B"/><stop offset="45%" stop-color="#18181B"/><stop offset="100%" stop-color="#09090B"/></linearGradient></defs><path d="M16 54 V49 C16 46 21 44 25 42 L26 33 H22 V29 H26 C24 27 23 24.5 23 22 C23 16.5 27 12.5 32 12.5 C37 12.5 41 16.5 41 22 C41 24.5 40 27 38 29 H42 V33 H38 L39 42 C43 44 48 46 48 49 V54 Z" fill="url(#blackOnyxP)" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/></svg>`,
+        wR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="whiteIceR" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="65%" stop-color="#EBF5FF"/><stop offset="100%" stop-color="#C2DDF5"/></linearGradient></defs><path d="M17 12 H23 V17 H29 V12 H35 V17 H41 V12 H47 V22 L41 27 V43 L48 48 V54 H16 V48 L23 43 V27 L17 22 Z" fill="url(#whiteIceR)" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+        bR: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="blackOnyxR" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#52525B"/><stop offset="45%" stop-color="#18181B"/><stop offset="100%" stop-color="#09090B"/></linearGradient></defs><path d="M17 12 H23 V17 H29 V12 H35 V17 H41 V12 H47 V22 L41 27 V43 L48 48 V54 H16 V48 L23 43 V27 L17 22 Z" fill="url(#blackOnyxR)" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/></svg>`,
+        wN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="whiteIceN" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="65%" stop-color="#EBF5FF"/><stop offset="100%" stop-color="#C2DDF5"/></linearGradient></defs><path d="M18 54 V49 C18 44 23 40 28 36 C25 36 21 38 18 36 C16 34 16 31 19 28 L23 24 C19 24 16 21 18 17 L24 11 C35 11 45 18 46 31 C47 38 45 43 44 46 L47 49 V54 Z" fill="url(#whiteIceN)" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/><circle cx="24" cy="18.5" r="1.8" fill="#111827"/></svg>`,
+        bN: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="blackOnyxN" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#52525B"/><stop offset="45%" stop-color="#18181B"/><stop offset="100%" stop-color="#09090B"/></linearGradient></defs><path d="M18 54 V49 C18 44 23 40 28 36 C25 36 21 38 18 36 C16 34 16 31 19 28 L23 24 C19 24 16 21 18 17 L24 11 C35 11 45 18 46 31 C47 38 45 43 44 46 L47 49 V54 Z" fill="url(#blackOnyxN)" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/><circle cx="24" cy="18.5" r="1.8" fill="#FFFFFF"/></svg>`,
+        wB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="whiteIceB" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="65%" stop-color="#EBF5FF"/><stop offset="100%" stop-color="#C2DDF5"/></linearGradient></defs><path d="M32 9 C33.8 9 35 10.2 35 12 C35 13 34.4 13.8 33.6 14.3 C38.5 17 41 21 41 25.5 C41 28 40 30.2 38.2 31.8 H41 V35 H37.5 L39 44 C43 45.5 47 47.5 47 50 V54 H17 V50 C17 47.5 21 45.5 25 44 L26.5 35 H23 V31.8 H25.8 C24 30.2 23 28 23 25.5 C23 21 25.5 17 30.4 14.3 C29.6 13.8 29 13 29 12 C29 10.2 30.2 9 32 9 Z" fill="url(#whiteIceB)" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 18.5 V26.5 M28 22.5 H36" stroke="#111827" stroke-width="2.3" stroke-linecap="round"/></svg>`,
+        bB: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="blackOnyxB" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#52525B"/><stop offset="45%" stop-color="#18181B"/><stop offset="100%" stop-color="#09090B"/></linearGradient></defs><path d="M32 9 C33.8 9 35 10.2 35 12 C35 13 34.4 13.8 33.6 14.3 C38.5 17 41 21 41 25.5 C41 28 40 30.2 38.2 31.8 H41 V35 H37.5 L39 44 C43 45.5 47 47.5 47 50 V54 H17 V50 C17 47.5 21 45.5 25 44 L26.5 35 H23 V31.8 H25.8 C24 30.2 23 28 23 25.5 C23 21 25.5 17 30.4 14.3 C29.6 13.8 29 13 29 12 C29 10.2 30.2 9 32 9 Z" fill="url(#blackOnyxB)" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/><path d="M32 18.5 V26.5 M28 22.5 H36" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+        wQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="whiteIceQ" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="65%" stop-color="#EBF5FF"/><stop offset="100%" stop-color="#C2DDF5"/></linearGradient></defs><path d="M32 8 C33.6 8 34.8 9.2 34.8 10.8 C34.8 11.7 34.3 12.5 33.6 13 C38 15.2 40.5 19 40.5 23 C40.5 25.5 39.5 27.6 37.8 29.2 H41 V32.5 H37.5 L39 44 C43 45.5 47 47.5 47 50 V54 H17 V50 C17 47.5 21 45.5 25 44 L26.5 32.5 H23 V29.2 H26.2 C24.5 27.6 23.5 25.5 23.5 23 C23.5 19 26 15.2 30.4 13 C29.7 12.5 29.2 11.7 29.2 10.8 C29.2 9.2 30.4 8 32 8 Z" fill="url(#whiteIceQ)" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/><path d="M29 17 L32 14.5 L35 17" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        bQ: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="blackOnyxQ" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#52525B"/><stop offset="45%" stop-color="#18181B"/><stop offset="100%" stop-color="#09090B"/></linearGradient></defs><path d="M32 8 C33.6 8 34.8 9.2 34.8 10.8 C34.8 11.7 34.3 12.5 33.6 13 C38 15.2 40.5 19 40.5 23 C40.5 25.5 39.5 27.6 37.8 29.2 H41 V32.5 H37.5 L39 44 C43 45.5 47 47.5 47 50 V54 H17 V50 C17 47.5 21 45.5 25 44 L26.5 32.5 H23 V29.2 H26.2 C24.5 27.6 23.5 25.5 23.5 23 C23.5 19 26 15.2 30.4 13 C29.7 12.5 29.2 11.7 29.2 10.8 C29.2 9.2 30.4 8 32 8 Z" fill="url(#blackOnyxQ)" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/><path d="M29 17 L32 14.5 L35 17" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+        wK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="whiteIceK" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="65%" stop-color="#EBF5FF"/><stop offset="100%" stop-color="#C2DDF5"/></linearGradient></defs><path d="M30.2 7 H33.8 V10.2 H37 V13.6 H33.8 V16.5 C38 18 40.5 21.2 40.5 24.8 C40.5 27.2 39.5 29.2 37.8 30.8 H41 V34 H37.5 L39 44 C43 45.5 47 47.5 47 50 V54 H17 V50 C17 47.5 21 45.5 25 44 L26.5 34 H23 V30.8 H26.2 C24.5 29.2 23.5 27.2 23.5 24.8 C23.5 21.2 26 18 30.2 16.5 V13.6 H27 V10.2 H30.2 Z" fill="url(#whiteIceK)" stroke="#111827" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
+        bK: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="blackOnyxK" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#52525B"/><stop offset="45%" stop-color="#18181B"/><stop offset="100%" stop-color="#09090B"/></linearGradient></defs><path d="M30.2 7 H33.8 V10.2 H37 V13.6 H33.8 V16.5 C38 18 40.5 21.2 40.5 24.8 C40.5 27.2 39.5 29.2 37.8 30.8 H41 V34 H37.5 L39 44 C43 45.5 47 47.5 47 50 V54 H17 V50 C17 47.5 21 45.5 25 44 L26.5 34 H23 V30.8 H26.2 C24.5 29.2 23.5 27.2 23.5 24.8 C23.5 21.2 26 18 30.2 16.5 V13.6 H27 V10.2 H30.2 Z" fill="url(#blackOnyxK)" stroke="#FFFFFF" stroke-width="2.2" stroke-linejoin="round"/></svg>`
+      }
+    };
+
+    window.CHESS_PIECES_SVG = CHESS_PIECES_SVG;
+    function getPieceSVG(theme = 'cburnett', pieceCode = 'wP') {
+      const selectedTheme = CHESS_PIECES_SVG[theme] || CHESS_PIECES_SVG.cburnett;
+      return selectedTheme[pieceCode] || '';
+    }
+    window.getPieceSVG = getPieceSVG;
+
+    /**
+     * 2. SINTETIZADOR DE ÁUDIO ESPACIAL (Web Audio API - Sem URLs externas)
+     */
+    const SoundFX = {
+      ctx: null,
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) this.ctx = new AudioCtx();
+        }
+      },
+      play(type = 'move') {
+        if (!appState.prefs.sound) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const now = this.ctx.currentTime;
+
+          if (type === 'move') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.08);
+            gain.gain.setValueAtTime(0.16, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.09);
+          } else if (type === 'capture') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(160, now);
+            osc.frequency.exponentialRampToValueAtTime(65, now + 0.14);
+            gain.gain.setValueAtTime(0.22, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+          } else if (type === 'check') {
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(520, now);
+            osc.frequency.setValueAtTime(660, now + 0.09);
+            gain.gain.setValueAtTime(0.18, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.22);
+          }
+        } catch (e) { /* Ignora bloqueio de áudio antes de interação */ }
+      }
+    };
+
+    /**
+     * 3. ESTADO GLOBAL DA APLICAÇÃO & PREFERÊNCIAS
+     */
+    const appState = {
+      screen: 'menu',
+      mode: 'cpu',         // 'cpu' | '1x1'
+      cpuLevel: 6,         // 1 a 8
+      sideChoice: 'white', // 'white' | 'black' | 'random'
+      playerColor: 'w',    // 'w' | 'b'
+      boardTheme: 'slate', // 'slate' | 'wood' | 'emerald' | 'glass'
+      pieceTheme: 'cburnett', // 'cburnett' | 'neo' | 'volumetric' | 'iceOnyx'
+      globalPoints: 75,    // Conforme anotação PONTOS • 75
+      prefs: {
+        sound: true,
+        haptics: true,
+        coach: true
+      }
+    };
+
+    const boardThemesMeta = [
+      { id: 'slate', name: 'Ardósia Escura', light: 'swatch-slate-light', dark: 'swatch-slate-dark' },
+      { id: 'wood', name: 'Madeira Clássica', light: 'swatch-wood-light', dark: 'swatch-wood-dark' },
+      { id: 'emerald', name: 'Verde Esmeralda', light: 'swatch-emerald-light', dark: 'swatch-emerald-dark' },
+      { id: 'glass', name: 'Liquid Glass', light: 'swatch-glass-light', dark: 'swatch-glass-dark' }
+    ];
+
+    const pieceThemesMeta = [
+      { id: 'cburnett', name: 'Cburnett Clássico' },
+      { id: 'neo', name: 'Editorial Neo' },
+      { id: 'volumetric', name: 'Volumétrico 3D' },
+      { id: 'iceOnyx', name: 'Gelo & Ônix' }
+    ];
+
+    const robotQuotesPool = [
+      '"Vamos nessa! Estou analisando o centro do tabuleiro."',
+      '"Boa jogada! A tensão está aumentando."',
+      '"Cuidado com as diagonais abertas!"',
+      '"Motor Minimax calibrado. Sua vez de agir!"'
+    ];
+    let robotQuoteIdx = 0;
+
+    /**
+     * 4. MOTOR DE XADREZ COMPLETO (REGRAS LEGAIS + ROQUE + EN PASSANT + PROMOÇÃO)
+     */
+    const game = {
+      board: [],
+      turn: 'w',
+      castling: { wK: true, wQ: true, bK: true, bQ: true },
+      enPassant: null, // { r, c }
+      selected: null,  // { r, c }
+      legalMoves: [],
+      lastMove: null,  // { from: {r,c}, to: {r,c} }
+      history: [],     // Snapshots para Desfazer
+      moveLog: [],
+      capturedByW: [],
+      capturedByB: [],
+      whiteTime: 900,  // 15:00 em segundos
+      blackTime: 900,
+      elapsedSec: 0,
+      timerInterval: null,
+      isGameOver: false,
+      aiThinking: false
+    };
+
+    const PIECE_VALUES = { P: 100, N: 320, B: 330, R: 500, Q: 900, K: 20000 };
+
+    // Tabelas Posicionais (Piece-Square Tables) para IA inteligente
+    const PST_PAWN = [
+      [0,  0,  0,  0,  0,  0,  0,  0],
+      [50, 50, 50, 50, 50, 50, 50, 50],
+      [10, 10, 20, 30, 30, 20, 10, 10],
+      [5,  5, 10, 25, 25, 10,  5,  5],
+      [0,  0,  0, 20, 20,  0,  0,  0],
+      [5, -5,-10,  0,  0,-10, -5,  5],
+      [5, 10, 10,-20,-20, 10, 10,  5],
+      [0,  0,  0,  0,  0,  0,  0,  0]
+    ];
+
+    const PST_KNIGHT = [
+      [-50,-40,-30,-30,-30,-30,-40,-50],
+      [-40,-20,  0,  0,  0,  0,-20,-40],
+      [-30,  0, 10, 15, 15, 10,  0,-30],
+      [-30,  5, 15, 20, 20, 15,  5,-30],
+      [-30,  0, 15, 20, 20, 15,  0,-30],
+      [-30,  5, 10, 15, 15, 10,  5,-30],
+      [-40,-20,  0,  5,  5,  0,-20,-40],
+      [-50,-40,-30,-30,-30,-30,-40,-50]
+    ];
+
+    const PST_BISHOP = [
+      [-20,-10,-10,-10,-10,-10,-10,-20],
+      [-10,  0,  0,  0,  0,  0,  0,-10],
+      [-10,  0,  5, 10, 10,  5,  0,-10],
+      [-10,  5,  5, 10, 10,  5,  5,-10],
+      [-10,  0, 10, 10, 10, 10,  0,-10],
+      [-10, 10, 10, 10, 10, 10, 10,-10],
+      [-10,  5,  0,  0,  0,  0,  5,-10],
+      [-20,-10,-10,-10,-10,-10,-10,-20]
+    ];
+
+    function initChessState() {
+      game.board = [
+        ['bR','bN','bB','bQ','bK','bB','bN','bR'],
+        ['bP','bP','bP','bP','bP','bP','bP','bP'],
+        [null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null],
+        ['wP','wP','wP','wP','wP','wP','wP','wP'],
+        ['wR','wN','wB','wQ','wK','wB','wN','wR']
+      ];
+      game.turn = 'w';
+      game.castling = { wK: true, wQ: true, bK: true, bQ: true };
+      game.enPassant = null;
+      game.selected = null;
+      game.legalMoves = [];
+      game.lastMove = null;
+      game.history = [];
+      game.moveLog = [];
+      game.capturedByW = [];
+      game.capturedByB = [];
+      game.whiteTime = 900;
+      game.blackTime = 900;
+      game.elapsedSec = 0;
+      game.isGameOver = false;
+      game.aiThinking = false;
+    }
+
+    function cloneBoard(b) {
+      return b.map(row => [...row]);
+    }
+
+    function inBounds(r, c) {
+      return r >= 0 && r < 8 && c >= 0 && c < 8;
+    }
+
+    // Gera movimentos pseudo-legais para uma casa
+    function getPseudoMoves(board, r, c, castling, enPassant) {
+      const piece = board[r][c];
+      if (!piece) return [];
+      const color = piece[0];
+      const type = piece[1];
+      const opp = color === 'w' ? 'b' : 'w';
+      const moves = [];
+
+      const addMove = (tr, tc, extra = {}) => {
+        moves.push({ from: { r, c }, to: { r: tr, c: tc }, piece, ...extra });
+      };
+
+      if (type === 'P') {
+        const dir = color === 'w' ? -1 : 1;
+        const startRow = color === 'w' ? 6 : 1;
+        const promoRow = color === 'w' ? 0 : 7;
+
+        // Avanço 1 casa
+        if (inBounds(r + dir, c) && !board[r + dir][c]) {
+          addMove(r + dir, c, { isPromotion: (r + dir === promoRow) });
+          // Avanço 2 casas
+          if (r === startRow && !board[r + 2 * dir][c]) {
+            addMove(r + 2 * dir, c, { isDoublePawn: true });
+          }
+        }
+        // Capturas diagonais & En Passant
+        for (const dc of [-1, 1]) {
+          const nr = r + dir;
+          const nc = c + dc;
+          if (!inBounds(nr, nc)) continue;
+          const target = board[nr][nc];
+          if (target && target[0] === opp) {
+            addMove(nr, nc, { captured: target, isPromotion: (nr === promoRow) });
+          } else if (enPassant && enPassant.r === nr && enPassant.c === nc) {
+            addMove(nr, nc, { captured: opp + 'P', isEnPassant: true });
+          }
+        }
+      } else if (type === 'N') {
+        const deltas = [[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]];
+        for (const [dr, dc] of deltas) {
+          const nr = r + dr, nc = c + dc;
+          if (!inBounds(nr, nc)) continue;
+          const target = board[nr][nc];
+          if (!target || target[0] === opp) addMove(nr, nc, { captured: target || null });
+        }
+      } else if (type === 'B' || type === 'R' || type === 'Q') {
+        const dirs = [];
+        if (type === 'B' || type === 'Q') dirs.push([-1,-1],[-1,1],[1,-1],[1,1]);
+        if (type === 'R' || type === 'Q') dirs.push([-1,0],[1,0],[0,-1],[0,1]);
+        for (const [dr, dc] of dirs) {
+          let nr = r + dr, nc = c + dc;
+          while (inBounds(nr, nc)) {
+            const target = board[nr][nc];
+            if (!target) {
+              addMove(nr, nc);
+            } else {
+              if (target[0] === opp) addMove(nr, nc, { captured: target });
+              break;
+            }
+            nr += dr;
+            nc += dc;
+          }
+        }
+      } else if (type === 'K') {
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            const nr = r + dr, nc = c + dc;
+            if (!inBounds(nr, nc)) continue;
+            const target = board[nr][nc];
+            if (!target || target[0] === opp) addMove(nr, nc, { captured: target || null });
+          }
+        }
+        // Roque (Castling)
+        const homeRow = color === 'w' ? 7 : 0;
+        if (r === homeRow && c === 4) {
+          // Roque Menor (Ala do Rei)
+          if (castling[color + 'K'] && !board[homeRow][5] && !board[homeRow][6] && board[homeRow][7] === color + 'R') {
+            addMove(homeRow, 6, { isCastle: 'K' });
+          }
+          // Roque Maior (Ala da Dama)
+          if (castling[color + 'Q'] && !board[homeRow][3] && !board[homeRow][2] && !board[homeRow][1] && board[homeRow][0] === color + 'R') {
+            addMove(homeRow, 2, { isCastle: 'Q' });
+          }
+        }
+      }
+      return moves;
+    }
+
+    function isSquareAttacked(board, targetR, targetC, attackerColor) {
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const p = board[r][c];
+          if (!p || p[0] !== attackerColor) continue;
+          const type = p[1];
+          if (type === 'P') {
+            const dir = attackerColor === 'w' ? -1 : 1;
+            if (r + dir === targetR && (c - 1 === targetC || c + 1 === targetC)) return true;
+          } else {
+            const pseudo = getPseudoMoves(board, r, c, { wK: false, wQ: false, bK: false, bQ: false }, null);
+            if (pseudo.some(m => m.to.r === targetR && m.to.c === targetC)) return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    function findKing(board, color) {
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (board[r][c] === color + 'K') return { r, c };
+        }
+      }
+      return null;
+    }
+
+    function isInCheck(board, color) {
+      const kingPos = findKing(board, color);
+      if (!kingPos) return false;
+      const opp = color === 'w' ? 'b' : 'w';
+      return isSquareAttacked(board, kingPos.r, kingPos.c, opp);
+    }
+
+    // Aplica movimento em uma cópia do estado e retorna novo estado
+    function simulateMove(board, castling, move, promoType = 'Q') {
+      const nb = cloneBoard(board);
+      const nc = { ...castling };
+      const { from, to, piece } = move;
+      const color = piece[0];
+      const opp = color === 'w' ? 'b' : 'w';
+
+      nb[from.r][from.c] = null;
+
+      if (move.isEnPassant) {
+        nb[from.r][to.c] = null;
+      }
+
+      if (move.isCastle) {
+        const row = from.r;
+        if (move.isCastle === 'K') {
+          nb[row][5] = nb[row][7];
+          nb[row][7] = null;
+        } else {
+          nb[row][3] = nb[row][0];
+          nb[row][0] = null;
+        }
+      }
+
+      nb[to.r][to.c] = move.isPromotion ? (color + promoType) : piece;
+
+      // Atualiza direitos de roque
+      if (piece === 'wK') { nc.wK = false; nc.wQ = false; }
+      if (piece === 'bK') { nc.bK = false; nc.bQ = false; }
+      if (from.r === 7 && from.c === 0 || to.r === 7 && to.c === 0) nc.wQ = false;
+      if (from.r === 7 && from.c === 7 || to.r === 7 && to.c === 7) nc.wK = false;
+      if (from.r === 0 && from.c === 0 || to.r === 0 && to.c === 0) nc.bQ = false;
+      if (from.r === 0 && from.c === 7 || to.r === 0 && to.c === 7) nc.bK = false;
+
+      const nextEp = move.isDoublePawn ? { r: (from.r + to.r) / 2, c: from.c } : null;
+      return { board: nb, castling: nc, enPassant: nextEp };
+    }
+
+    // Gera todos os lances estritamente legais para um jogador
+    function getAllLegalMoves(board, color, castling, enPassant) {
+      const legal = [];
+      const opp = color === 'w' ? 'b' : 'w';
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (!board[r][c] || board[r][c][0] !== color) continue;
+          const pseudo = getPseudoMoves(board, r, c, castling, enPassant);
+
+          for (const m of pseudo) {
+            // Validação extra do Roque: não pode sair, passar ou terminar em xeque
+            if (m.isCastle) {
+              if (isInCheck(board, color)) continue;
+              const passCol = m.isCastle === 'K' ? 5 : 3;
+              if (isSquareAttacked(board, r, passCol, opp)) continue;
+            }
+            const sim = simulateMove(board, castling, m);
+            if (!isInCheck(sim.board, color)) {
+              legal.push(m);
+            }
+          }
+        }
+      }
+      return legal;
+    }
+
+    /**
+     * 5. INTELIGÊNCIA ARTIFICIAL ADAPTATIVA (NÍVEIS 1 A 8 — MINIMAX + ALFA-BETA)
+     */
+    function evaluateBoard(board) {
+      let score = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const p = board[r][c];
+          if (!p) continue;
+          const color = p[0];
+          const type = p[1];
+          let val = PIECE_VALUES[type] || 0;
+
+          const pr = color === 'w' ? r : 7 - r;
+          if (type === 'P') val += PST_PAWN[pr][c];
+          else if (type === 'N') val += PST_KNIGHT[pr][c];
+          else if (type === 'B') val += PST_BISHOP[pr][c];
+
+          score += (color === 'w' ? val : -val);
+        }
+      }
+      return score;
+    }
+
+    function minimax(board, depth, alpha, beta, isMaximizing, castling, enPassant) {
+      const color = isMaximizing ? 'w' : 'b';
+      const moves = getAllLegalMoves(board, color, castling, enPassant);
+
+      if (moves.length === 0) {
+        if (isInCheck(board, color)) {
+          return isMaximizing ? (-99999 - depth) : (99999 + depth);
+        }
+        return 0; // Empate por afogamento
+      }
+
+      if (depth === 0) {
+        return evaluateBoard(board);
+      }
+
+      // Ordena capturas primeiro para otimizar a poda Alfa-Beta
+      moves.sort((a, b) => (b.captured ? 10 : 0) - (a.captured ? 10 : 0));
+
+      if (isMaximizing) {
+        let maxEval = -Infinity;
+        for (const m of moves) {
+          const sim = simulateMove(board, castling, m);
+          const ev = minimax(sim.board, depth - 1, alpha, beta, false, sim.castling, sim.enPassant);
+          maxEval = Math.max(maxEval, ev);
+          alpha = Math.max(alpha, ev);
+          if (beta <= alpha) break;
+        }
+        return maxEval;
+      } else {
+        let minEval = Infinity;
+        for (const m of moves) {
+          const sim = simulateMove(board, castling, m);
+          const ev = minimax(sim.board, depth - 1, alpha, beta, true, sim.castling, sim.enPassant);
+          minEval = Math.min(minEval, ev);
+          beta = Math.min(beta, ev);
+          if (beta <= alpha) break;
+        }
+        return minEval;
+      }
+    }
+
+    function computeBestAIMove() {
+      const aiColor = game.turn;
+      const moves = getAllLegalMoves(game.board, aiColor, game.castling, game.enPassant);
+      if (moves.length === 0) return null;
+
+      const lvl = appState.cpuLevel;
+      const depth = lvl <= 2 ? 1 : lvl <= 5 ? 2 : 3;
+      const isMax = aiColor === 'w';
+
+      const scoredMoves = moves.map(m => {
+        const sim = simulateMove(game.board, game.castling, m);
+        const score = minimax(sim.board, depth - 1, -Infinity, Infinity, !isMax, sim.castling, sim.enPassant);
+        return { move: m, score };
+      });
+
+      scoredMoves.sort((a, b) => isMax ? (b.score - a.score) : (a.score - b.score));
+
+      // Nos níveis 1 a 3, introduz variedade humana para iniciantes vencerem
+      if (lvl === 1) {
+        const pool = scoredMoves.slice(0, Math.min(6, scoredMoves.length));
+        return pool[Math.floor(Math.random() * pool.length)].move;
+      } else if (lvl <= 3) {
+        const pool = scoredMoves.slice(0, Math.min(3, scoredMoves.length));
+        return pool[Math.floor(Math.random() * pool.length)].move;
+      }
+
+      return scoredMoves[0].move;
+    }
+
+    /**
+     * 6. EXECUÇÃO DE LANCES, NOTAÇÃO E RENDERIZAÇÃO DO TABULEIRO
+     */
+    function toAlgebraic(move, inCheckAfter, isMateAfter) {
+      const files = 'abcdefgh';
+      const ranks = '87654321';
+      if (move.isCastle === 'K') return 'O-O';
+      if (move.isCastle === 'Q') return 'O-O-O';
+      const pLetter = move.piece[1] === 'P' ? '' : move.piece[1];
+      const cap = move.captured ? 'x' : '';
+      const fromFile = (move.piece[1] === 'P' && move.captured) ? files[move.from.c] : '';
+      const dest = files[move.to.c] + ranks[move.to.r];
+      const suffix = isMateAfter ? '#' : inCheckAfter ? '+' : '';
+      return `${pLetter}${fromFile}${cap}${dest}${suffix}`;
+    }
+
+    function executeMove(move, promoType = 'Q') {
+      // Salva snapshot para o botão Desfazer
+      game.history.push({
+        board: cloneBoard(game.board),
+        turn: game.turn,
+        castling: { ...game.castling },
+        enPassant: game.enPassant ? { ...game.enPassant } : null,
+        lastMove: game.lastMove ? { ...game.lastMove } : null,
+        capturedByW: [...game.capturedByW],
+        capturedByB: [...game.capturedByB],
+        moveLog: [...game.moveLog]
+      });
+
+      const movingColor = game.turn;
+      const oppColor = movingColor === 'w' ? 'b' : 'w';
+
+      if (move.captured) {
+        if (movingColor === 'w') game.capturedByW.push(move.captured);
+        else game.capturedByB.push(move.captured);
+      }
+
+      const nextState = simulateMove(game.board, game.castling, move, promoType);
+      game.board = nextState.board;
+      game.castling = nextState.castling;
+      game.enPassant = nextState.enPassant;
+      game.lastMove = { from: move.from, to: move.to };
+      game.selected = null;
+      game.legalMoves = [];
+      game.turn = oppColor;
+
+      const oppMoves = getAllLegalMoves(game.board, oppColor, game.castling, game.enPassant);
+      const inCheckNow = isInCheck(game.board, oppColor);
+      const isMateNow = oppMoves.length === 0 && inCheckNow;
+      const isStalemateNow = oppMoves.length === 0 && !inCheckNow;
+
+      const notation = toAlgebraic(move, inCheckNow, isMateNow);
+      game.moveLog.push({ turnColor: movingColor, text: notation });
+
+      // Som & Feedback
+      if (isMateNow || inCheckNow) SoundFX.play('check');
+      else if (move.captured) SoundFX.play('capture');
+      else SoundFX.play('move');
+
+      renderBoard();
+      updateMatchHUD();
+
+      // Verifica fim de jogo
+      if (isMateNow) {
+        const playerWon = (movingColor === appState.playerColor) || appState.mode === '1x1';
+        finishMatch(playerWon ? 'victory' : 'defeat', `Xeque-mate! (${notation})`);
+        return;
+      }
+      if (isStalemateNow) {
+        finishMatch('draw', 'Empate por afogamento (Stalemate).');
+        return;
+      }
+
+      // Reação do Mascote Robô IA
+      if (appState.mode === 'cpu') {
+        if (game.turn !== appState.playerColor) {
+          setRobotSpeech(inCheckNow ? '"Xeque! Deixe-me defender o Rei..."' : '"Hmm, interessante... Calculando resposta..."', `IA Nível ${appState.cpuLevel} • Pensando...`);
+          triggerAITurn();
+        } else {
+          setRobotSpeech(inCheckNow ? '"Atenção! Seu Rei está em Xeque!"' : '"Sua vez! Escolha seu próximo movimento."', `IA Nível ${appState.cpuLevel} • Aguardando você`);
+        }
+      } else {
+        const sideText = game.turn === 'w' ? 'Claras' : 'Escuras';
+        setRobotSpeech(`"Turno das peças ${sideText}."`, 'Modo 1x1 Local');
+      }
+    }
+
+    function triggerAITurn() {
+      if (game.isGameOver || game.aiThinking) return;
+      game.aiThinking = true;
+      updateMatchHUD();
+
+      const delay = appState.cpuLevel <= 3 ? 420 : appState.cpuLevel <= 6 ? 650 : 850;
+      setTimeout(() => {
+        if (game.isGameOver) {
+          game.aiThinking = false;
+          return;
+        }
+        const aiMove = computeBestAIMove();
+        game.aiThinking = false;
+        if (aiMove) {
+          executeMove(aiMove, 'Q');
+        }
+      }, delay);
+    }
+
+    function handleSquareClick(r, c) {
+      if (game.isGameOver || game.aiThinking) return;
+      if (appState.mode === 'cpu' && game.turn !== appState.playerColor) return;
+
+      // Verifica se clicou em um destino legal da peça selecionada
+      const chosenMove = game.legalMoves.find(m => m.to.r === r && m.to.c === c);
+      if (chosenMove) {
+        if (chosenMove.isPromotion) {
+          openPromotionModal(chosenMove);
+        } else {
+          executeMove(chosenMove);
+        }
+        return;
+      }
+
+      // Seleciona nova peça da vez
+      const piece = game.board[r][c];
+      if (piece && piece[0] === game.turn) {
+        game.selected = { r, c };
+        const allLegal = getAllLegalMoves(game.board, game.turn, game.castling, game.enPassant);
+        game.legalMoves = allLegal.filter(m => m.from.r === r && m.from.c === c);
+        renderBoard();
+      } else {
+        game.selected = null;
+        game.legalMoves = [];
+        renderBoard();
+      }
+    }
+
+    function openPromotionModal(move) {
+      const modal = document.getElementById('promotion-modal');
+      const container = document.getElementById('promotion-choices');
+      const color = move.piece[0];
+      const options = ['Q', 'R', 'B', 'N'];
+
+      container.innerHTML = options.map(type => `
+        <button onclick="confirmPromotion('${type}')" class="tactile-btn p-3 rounded-2xl liquid-glass hover:bg-blue-600/20 flex items-center justify-center aspect-square cursor-pointer">
+          <div class="w-12 h-12">${getPieceSVG(appState.pieceTheme, color + type)}</div>
+        </button>
+      `).join('');
+
+      window._pendingPromotionMove = move;
+      modal.classList.remove('hidden');
+    }
+
+    function confirmPromotion(type) {
+      document.getElementById('promotion-modal').classList.add('hidden');
+      if (window._pendingPromotionMove) {
+        const m = window._pendingPromotionMove;
+        window._pendingPromotionMove = null;
+        executeMove(m, type);
+      }
+    }
+
+    function undoLastMove() {
+      if (game.history.length === 0 || game.aiThinking || game.isGameOver) return;
+
+      // No modo CPU, desfaz 2 lances (o da IA e o do Jogador) para voltar à vez do jogador
+      let steps = (appState.mode === 'cpu' && game.history.length >= 2) ? 2 : 1;
+      let snap = null;
+      while (steps > 0 && game.history.length > 0) {
+        snap = game.history.pop();
+        steps--;
+      }
+
+      if (snap) {
+        game.board = snap.board;
+        game.turn = snap.turn;
+        game.castling = snap.castling;
+        game.enPassant = snap.enPassant;
+        game.lastMove = snap.lastMove;
+        game.capturedByW = snap.capturedByW;
+        game.capturedByB = snap.capturedByB;
+        game.moveLog = snap.moveLog;
+        game.selected = null;
+        game.legalMoves = [];
+
+        SoundFX.play('move');
+        setRobotSpeech('"Lance desfeito! Pode jogar novamente."', 'Turno restaurado');
+        renderBoard();
+        updateMatchHUD();
+      }
+    }
+
+    function renderBoard() {
+      const grid = document.getElementById('chessboard-grid');
+      if (!grid) return;
+
+      const flipBoard = (appState.mode === 'cpu' && appState.playerColor === 'b');
+      const kingInCheckPos = isInCheck(game.board, game.turn) ? findKing(game.board, game.turn) : null;
+
+      let html = '';
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          const r = flipBoard ? 7 - i : i;
+          const c = flipBoard ? 7 - j : j;
+          const isLight = (r + c) % 2 === 0;
+          const piece = game.board[r][c];
+
+          const isSelected = game.selected && game.selected.r === r && game.selected.c === c;
+          const isLast = game.lastMove && ((game.lastMove.from.r === r && game.lastMove.from.c === c) || (game.lastMove.to.r === r && game.lastMove.to.c === c));
+          const isCheckSq = kingInCheckPos && kingInCheckPos.r === r && kingInCheckPos.c === c;
+          const legalMove = game.legalMoves.find(m => m.to.r === r && m.to.c === c);
+
+          const classes = [
+            'chess-sq',
+            isLight ? 'sq-light' : 'sq-dark',
+            isSelected ? 'sq-selected' : '',
+            isLast ? 'sq-last-move' : '',
+            isCheckSq ? 'sq-check' : ''
+          ].filter(Boolean).join(' ');
+
+          html += `<div class="${classes}" onclick="handleSquareClick(${r}, ${c})">`;
+          if (piece) {
+            html += `<div class="piece-wrapper">${getPieceSVG(appState.pieceTheme, piece)}</div>`;
+          }
+          if (legalMove) {
+            if (legalMove.captured) {
+              html += `<div class="legal-capture-ring"></div>`;
+            } else {
+              html += `<div class="legal-dot"></div>`;
+            }
+          }
+          html += `</div>`;
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    /**
+     * 7. ATUALIZAÇÃO DOS HUDs, CRONÔMETROS E PONTUAÇÃO
+     */
+    function formatSeconds(sec) {
+      const m = Math.floor(Math.max(0, sec) / 60);
+      const s = Math.floor(Math.max(0, sec) % 60);
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function calcMaterialPoints(capturedList) {
+      const map = { P: 10, N: 30, B: 30, R: 50, Q: 90 };
+      return capturedList.reduce((acc, code) => acc + (map[code[1]] || 0), 0);
+    }
+
+    function updateMatchHUD() {
+      const pColor = appState.playerColor;
+      const oppColor = pColor === 'w' ? 'b' : 'w';
+
+      // Cabeçalho do Oponente
+      const oppName = document.getElementById('opponent-name-display');
+      const oppAvatar = document.getElementById('opponent-avatar-text');
+      const oppStatus = document.getElementById('opponent-status-display');
+      if (appState.mode === 'cpu') {
+        oppName.textContent = `CPU • Nível ${appState.cpuLevel}`;
+        oppAvatar.textContent = 'IA';
+        oppStatus.innerHTML = game.aiThinking
+          ? `<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span><span class="text-amber-600 dark:text-amber-400 font-semibold">Calculando lance...</span>`
+          : `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Oponente conectado</span>`;
+      } else {
+        oppName.textContent = 'Jogador 2 • Local';
+        oppAvatar.textContent = 'J2';
+        oppStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Modo presencial</span>`;
+      }
+
+      // Pontos & Cronômetros
+      const playerCap = pColor === 'w' ? game.capturedByW : game.capturedByB;
+      const oppCap = pColor === 'w' ? game.capturedByB : game.capturedByW;
+
+      const playerPts = 120 + calcMaterialPoints(playerCap);
+      const oppPts = calcMaterialPoints(oppCap);
+
+      document.getElementById('player-score-display').textContent = `${playerPts} PONTOS`;
+      document.getElementById('opponent-score-display').textContent = `${oppPts} PONTOS`;
+
+      const pTime = pColor === 'w' ? game.whiteTime : game.blackTime;
+      const oTime = pColor === 'w' ? game.blackTime : game.whiteTime;
+      document.getElementById('player-timer-display').textContent = formatSeconds(pTime);
+      document.getElementById('opponent-timer-display').textContent = formatSeconds(oTime);
+
+      // Turno do Jogador 1
+      const p1Label = document.getElementById('player1-turn-label');
+      const sideName = pColor === 'w' ? 'Claras' : 'Escuras';
+      if (game.turn === pColor) {
+        p1Label.textContent = `Sua vez • ${sideName}`;
+        p1Label.className = 'text-[11px] text-blue-600 dark:text-blue-400 font-bold';
+      } else {
+        p1Label.textContent = appState.mode === 'cpu' ? 'Aguardando IA...' : `Vez do Jogador 2`;
+        p1Label.className = 'text-[11px] text-slate-500 dark:text-slate-400 font-semibold';
+      }
+
+      const turnNum = Math.floor(game.moveLog.length / 2) + 1;
+      const activeTurnText = game.turn === 'w' ? 'CLARAS' : 'ESCURAS';
+      document.getElementById('turn-badge-header').textContent = `TURNO ${String(turnNum).padStart(2, '0')} • ${activeTurnText}`;
+      document.getElementById('active-skin-badge').textContent = appState.pieceTheme.toUpperCase();
+
+      // Peças Capturadas na Barra Lateral
+      document.getElementById('captured-by-player-count').textContent = playerCap.length;
+      document.getElementById('captured-by-player-list').innerHTML = playerCap.map(c =>
+        `<span class="w-6 h-6 inline-block">${getPieceSVG(appState.pieceTheme, c)}</span>`
+      ).join('');
+
+      document.getElementById('captured-by-opp-count').textContent = oppCap.length;
+      document.getElementById('captured-by-opp-list').innerHTML = oppCap.map(c =>
+        `<span class="w-6 h-6 inline-block">${getPieceSVG(appState.pieceTheme, c)}</span>`
+      ).join('');
+
+      // Histórico Algébrico
+      const logEl = document.getElementById('move-history-list');
+      if (game.moveLog.length === 0) {
+        logEl.innerHTML = `<div class="text-xs text-slate-400 py-2 text-center">Nenhum lance registrado ainda.</div>`;
+      } else {
+        let rowsHtml = '';
+        for (let i = 0; i < game.moveLog.length; i += 2) {
+          const num = Math.floor(i / 2) + 1;
+          const wMove = game.moveLog[i]?.text || '';
+          const bMove = game.moveLog[i + 1]?.text || '...';
+          rowsHtml += `
+            <div class="flex items-center justify-between px-3 py-1.5 rounded-xl bg-white/45 dark:bg-white/5 border border-slate-400/15">
+              <span class="text-slate-400 w-7">${String(num).padStart(2, '0')}.</span>
+              <span class="font-bold flex-1">${wMove}</span>
+              <span class="font-semibold text-slate-600 dark:text-slate-300 flex-1 text-right">${bMove}</span>
+            </div>`;
+        }
+        logEl.innerHTML = rowsHtml;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+    }
+
+    function startMatchClock() {
+      clearInterval(game.timerInterval);
+      game.timerInterval = setInterval(() => {
+        if (appState.screen !== 'match' || game.isGameOver) return;
+        game.elapsedSec++;
+        if (game.turn === 'w') {
+          game.whiteTime = Math.max(0, game.whiteTime - 1);
+          if (game.whiteTime === 0) finishMatch(appState.playerColor === 'w' ? 'defeat' : 'victory', 'Tempo esgotado!');
+        } else {
+          game.blackTime = Math.max(0, game.blackTime - 1);
+          if (game.blackTime === 0) finishMatch(appState.playerColor === 'b' ? 'defeat' : 'victory', 'Tempo esgotado!');
+        }
+        updateMatchHUD();
+      }, 1000);
+    }
+
+    /**
+     * 8. NAVEGAÇÃO, CONFIGURAÇÕES E CONTROLES DA INTERFACE
+     */
+    function navigateTo(screenId) {
+      appState.screen = screenId;
+      document.querySelectorAll('.screen-view').forEach(sec => sec.classList.add('hidden'));
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) {
+        target.classList.remove('hidden');
+        target.classList.remove('screen-enter');
+        void target.offsetWidth;
+        target.classList.add('screen-enter');
+      }
+
+      document.querySelectorAll('.nav-pill').forEach(pill => {
+        const active = pill.dataset.tab === screenId;
+        if (active) {
+          pill.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+          pill.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-black/5', 'dark:hover:bg-white/10');
+        } else {
+          pill.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+          pill.classList.add('text-slate-600', 'dark:text-slate-300', 'hover:bg-black/5', 'dark:hover:bg-white/10');
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const sw = document.getElementById('settings-theme-switch');
+      if (sw) sw.classList.toggle('active', isDark);
+    }
+
+    function togglePreference(key, btn) {
+      appState.prefs[key] = !appState.prefs[key];
+      btn.classList.toggle('active', appState.prefs[key]);
+      if (key === 'coach') {
+        const row = document.getElementById('coach-mascot-row');
+        if (row) row.classList.toggle('hidden', !appState.prefs.coach);
+      }
+    }
+
+    function toggleIosSwitch(btn) {
+      btn.classList.toggle('active');
+    }
+
+    function selectMode(mode) {
+      appState.mode = mode;
+      const btnCpu = document.getElementById('mode-btn-cpu');
+      const btn1x1 = document.getElementById('mode-btn-1x1');
+      const badgeCpu = document.getElementById('badge-cpu');
+      const badge1x1 = document.getElementById('badge-1x1');
+      const diffPanel = document.getElementById('cpu-difficulty-panel');
+
+      if (mode === 'cpu') {
+        btnCpu.className = 'tactile-btn w-full text-left p-4 rounded-2xl border-2 border-blue-600 bg-blue-600/10 dark:bg-blue-500/15 relative transition-all flex items-center justify-between';
+        btn1x1.className = 'tactile-btn w-full text-left p-4 rounded-2xl border border-slate-400/25 hover:border-slate-400/50 bg-white/40 dark:bg-white/5 relative transition-all flex items-center justify-between';
+        badgeCpu.className = 'w-3.5 h-3.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 shrink-0';
+        badge1x1.className = 'w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-zinc-700 shrink-0';
+        diffPanel.classList.remove('opacity-40', 'pointer-events-none');
+      } else {
+        btn1x1.className = 'tactile-btn w-full text-left p-4 rounded-2xl border-2 border-blue-600 bg-blue-600/10 dark:bg-blue-500/15 relative transition-all flex items-center justify-between';
+        btnCpu.className = 'tactile-btn w-full text-left p-4 rounded-2xl border border-slate-400/25 hover:border-slate-400/50 bg-white/40 dark:bg-white/5 relative transition-all flex items-center justify-between';
+        badge1x1.className = 'w-3.5 h-3.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 shrink-0';
+        badgeCpu.className = 'w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-zinc-700 shrink-0';
+        diffPanel.classList.add('opacity-40', 'pointer-events-none');
+      }
+    }
+
+    function changeCpuLevel(delta) {
+      appState.cpuLevel = Math.min(8, Math.max(1, appState.cpuLevel + delta));
+      document.getElementById('cpu-level-number').textContent = appState.cpuLevel;
+      document.getElementById('cpu-level-text').textContent = appState.cpuLevel;
+
+      const labelEl = document.getElementById('cpu-level-label');
+      const timeEl = document.getElementById('cpu-response-time');
+      if (appState.cpuLevel <= 2) {
+        labelEl.textContent = 'INICIANTE';
+        timeEl.textContent = 'Tempo de resposta: ~0.4s';
+      } else if (appState.cpuLevel <= 5) {
+        labelEl.textContent = 'INTERMEDIÁRIO';
+        timeEl.textContent = 'Tempo de resposta: ~0.6s';
+      } else if (appState.cpuLevel <= 7) {
+        labelEl.textContent = 'AVANÇADO';
+        timeEl.textContent = 'Tempo de resposta: ~0.8s';
+      } else {
+        labelEl.textContent = 'MESTRE';
+        timeEl.textContent = 'Tempo de resposta: ~1.1s';
+      }
+    }
+
+    function selectSide(side) {
+      appState.sideChoice = side;
+      ['random', 'white', 'black'].forEach(s => {
+        const el = document.getElementById(`side-btn-${s}`);
+        if (s === side) {
+          el.className = 'side-btn tactile-btn p-3.5 rounded-2xl border-2 border-blue-600 bg-blue-600/10 dark:bg-blue-500/15 flex flex-col items-center gap-2.5';
+        } else {
+          el.className = 'side-btn tactile-btn p-3.5 rounded-2xl border border-slate-400/25 bg-white/40 dark:bg-white/5 flex flex-col items-center gap-2.5';
+        }
+      });
+    }
+
+    function startNewSession() {
+      if (appState.sideChoice === 'random') {
+        appState.playerColor = Math.random() < 0.5 ? 'w' : 'b';
+      } else {
+        appState.playerColor = appState.sideChoice === 'black' ? 'b' : 'w';
+      }
+
+      initChessState();
+      renderBoard();
+      updateMatchHUD();
+      startMatchClock();
+      navigateTo('match');
+
+      if (appState.mode === 'cpu' && appState.playerColor === 'b') {
+        setRobotSpeech('"Eu começo com as Claras! Vamos nessa!"', `IA Nível ${appState.cpuLevel} • Abrindo partida`);
+        triggerAITurn();
+      } else {
+        setRobotSpeech('"Vamos nessa! Faça o seu primeiro lance."', `IA Nível ${appState.cpuLevel} • Pronta para jogar`);
+      }
+    }
+
+    function setRobotSpeech(text, sub) {
+      const t = document.getElementById('robot-speech-text');
+      const s = document.getElementById('robot-speech-sub');
+      if (t) t.textContent = text;
+      if (s && sub) s.textContent = sub;
+    }
+
+    function cycleRobotQuote() {
+      robotQuoteIdx = (robotQuoteIdx + 1) % robotQuotesPool.length;
+      setRobotSpeech(robotQuotesPool[robotQuoteIdx]);
+    }
+
+    // Temas do Tabuleiro & Skins de Peças (svg.js)
+    function setBoardTheme(themeId) {
+      appState.boardTheme = themeId;
+      const wrapper = document.getElementById('board-theme-wrapper');
+      if (wrapper) {
+        wrapper.className = `theme-${themeId} liquid-glass rounded-[26px] p-3.5 sm:p-5`;
+      }
+
+      document.querySelectorAll('.btheme-pill').forEach(p => {
+        if (p.dataset.btheme === themeId) {
+          p.classList.add('bg-blue-600', 'text-white');
+          p.classList.remove('hover:bg-black/5', 'dark:hover:bg-white/10');
+        } else {
+          p.classList.remove('bg-blue-600', 'text-white');
+          p.classList.add('hover:bg-black/5', 'dark:hover:bg-white/10');
+        }
+      });
+
+      const meta = boardThemesMeta.find(t => t.id === themeId) || boardThemesMeta[0];
+      document.getElementById('settings-board-name').textContent = meta.name;
+      document.getElementById('swatch-light').className = `w-16 h-16 rounded-2xl ${meta.light} shadow-md border border-slate-300/60 transition-all duration-300`;
+      document.getElementById('swatch-dark').className = `w-16 h-16 rounded-2xl ${meta.dark} shadow-md border border-white/20 transition-all duration-300`;
+    }
+
+    function cycleBoardTheme(dir) {
+      const idx = boardThemesMeta.findIndex(t => t.id === appState.boardTheme);
+      const next = (idx + dir + boardThemesMeta.length) % boardThemesMeta.length;
+      setBoardTheme(boardThemesMeta[next].id);
+    }
+
+    function setPieceTheme(themeId) {
+      appState.pieceTheme = themeId;
+      const meta = pieceThemesMeta.find(p => p.id === themeId) || pieceThemesMeta[0];
+      document.getElementById('settings-piece-name').textContent = meta.name;
+
+      // Atualiza prévia na tela de Ajustes usando o svg.js
+      const preview = document.getElementById('svg-piece-theme-preview');
+      if (preview) {
+        preview.innerHTML = `
+          <div class="w-16 h-16 rounded-2xl bg-slate-200/70 dark:bg-white/10 border border-slate-400/25 p-2 flex items-center justify-center shadow-sm">
+            ${getPieceSVG(themeId, 'wK')}
+          </div>
+          <div class="w-16 h-16 rounded-2xl bg-slate-200/70 dark:bg-white/10 border border-slate-400/25 p-2 flex items-center justify-center shadow-sm">
+            ${getPieceSVG(themeId, 'bK')}
+          </div>
+        `;
+      }
+
+      renderBoard();
+      updateMatchHUD();
+    }
+
+    function cyclePieceTheme(dir) {
+      const idx = pieceThemesMeta.findIndex(p => p.id === appState.pieceTheme);
+      const next = (idx + dir + pieceThemesMeta.length) % pieceThemesMeta.length;
+      setPieceTheme(pieceThemesMeta[next].id);
+    }
+
+    // Finalização de Partida e Atualização de PONTOS • 75
+    function finishMatch(outcome, reasonText) {
+      game.isGameOver = true;
+      clearInterval(game.timerInterval);
+
+      const deltaMap = { victory: 120, defeat: -35, draw: 15 };
+      appState.globalPoints = Math.max(0, appState.globalPoints + (deltaMap[outcome] || 0));
+      updateGlobalPointsDisplay();
+
+      const elapsedFormatted = formatSeconds(game.elapsedSec || 36);
+      ['victory', 'defeat', 'draw'].forEach(type => {
+        const badge = document.getElementById(`${type}-time-badge`);
+        if (badge) badge.textContent = elapsedFormatted;
+
+        const card = document.getElementById(`outcome-card-${type}`);
+        if (!card) return;
+        if (type === outcome) {
+          card.classList.add('border-2', 'border-blue-600', 'scale-[1.02]');
+        } else {
+          card.classList.remove('border-2', 'border-blue-600', 'scale-[1.02]');
+        }
+      });
+
+      const sub = document.getElementById('outcome-subtitle');
+      if (sub && reasonText) sub.textContent = reasonText;
+
+      navigateTo('outcomes');
+    }
+
+    function resignMatch() {
+      finishMatch('defeat', 'Você optou por render-se nesta sessão.');
+    }
+
+    function offerDraw() {
+      finishMatch('draw', 'Empate acordado entre os jogadores.');
+    }
+
+    function updateGlobalPointsDisplay() {
+      const label = `PONTOS • ${appState.globalPoints}`;
+      const el1 = document.getElementById('outcomes-total-points');
+      const el2 = document.getElementById('menu-global-points');
+      if (el1) el1.textContent = label;
+      if (el2) el2.textContent = label;
+    }
+
+    function saveSessionToStorage() {
+      try {
+        localStorage.setItem('xadra_prefs_v1', JSON.stringify({
+          boardTheme: appState.boardTheme,
+          pieceTheme: appState.pieceTheme,
+          globalPoints: appState.globalPoints,
+          savedAt: new Date().toLocaleDateString('pt-BR')
+        }));
+      } catch (e) {}
+      const lbl = document.getElementById('save-btn-label');
+      if (lbl) {
+        lbl.textContent = 'Salvo!';
+        setTimeout(() => { lbl.textContent = 'Salvar'; }, 1500);
+      }
+    }
+
+    // Controles do Modal LGPD
+    function openLgpdModal() {
+      document.getElementById('lgpd-modal-backdrop').classList.remove('hidden');
+    }
+
+    function closeLgpdModal() {
+      document.getElementById('lgpd-modal-backdrop').classList.add('hidden');
+    }
+
+    function handleLgpdChoice(choice) {
+      const funcToggle = document.getElementById('lgpd-toggle-functional');
+      if (funcToggle) funcToggle.classList.toggle('active', choice === 'all');
+      closeLgpdModal();
+    }
+
+    // Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+      initChessState();
+      setBoardTheme('slate');
+      setPieceTheme('cburnett');
+      updateGlobalPointsDisplay();
+      updateMatchHUD();
+      startMatchClock();
+    });
+  </script>
+</body>
+</html>
